@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useMemo} from 'react';
 import { AlertCircle, Bell, Menu, MoreVertical, Plus, Search, Settings, ChevronDown, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Simulated API call
-const fetchApplications = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        { id: 1, name: 'John Doe', status: 'New', rating: 4, pipeline: 'Interview', postingTitle: 'Software Engineer' },
-        { id: 2, name: 'Jane Smith', status: 'In Review', rating: 3, pipeline: 'Screening', postingTitle: 'Product Manager' },
-        { id: 3, name: 'Bob Johnson', status: 'Rejected', rating: 2, pipeline: 'Closed', postingTitle: 'Data Analyst' },
-      ]);
-    }, 1000);
-  });
-};
+// const fetchApplications = () => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve([
+//         { id: 1, name: 'John Doe', status: 'New', rating: 4, pipeline: 'Interview', postingTitle: 'Software Engineer' },
+//         { id: 2, name: 'Jane Smith', status: 'In Review', rating: 3, pipeline: 'Screening', postingTitle: 'Product Manager' },
+//         { id: 3, name: 'Bob Johnson', status: 'Rejected', rating: 2, pipeline: 'Closed', postingTitle: 'Data Analyst' },
+//       ]);
+//     }, 1000);
+//   });
+// };
 
 // const Navbar = () => (
 //   <nav className="bg-blue-600 text-white p-4">
@@ -128,7 +128,7 @@ const ApplicationTable = ({ applications, onSort }) => (
   <table className="w-full border-collapse">
     <thead>
       <tr className="bg-gray-100">
-        {['RATING', 'APPLICATION NAME', 'HIRING PIPELINE', 'APPLICATION STATUS', 'APPLICATION ID', 'POSTING TITLE'].map((header) => (
+        {['RATING', 'APPLICATION NAME', 'CITY', 'CANDIDATE STAGE', 'APPLICATION ID', 'POSTING TITLE','SOURCE','CANDIDATE OWNER'].map((header) => (
           <th key={header} className="border p-2 text-left cursor-pointer" onClick={() => onSort(header.toLowerCase())}>
             {header} <ChevronDown className="inline h-4 w-4" />
           </th>
@@ -143,6 +143,8 @@ const ApplicationTable = ({ applications, onSort }) => (
           <td className="border p-2">{app.pipeline}</td>
           <td className="border p-2">{app.status}</td>
           <td className="border p-2">{app.id}</td>
+          <td className="border p-2">{app.postingTitle}</td>
+          <td className="border p-2">{app.postingTitle}</td>
           <td className="border p-2">{app.postingTitle}</td>
         </tr>
       ))}
@@ -164,6 +166,21 @@ const ApplicationManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
+  const fetchApplications = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/resumes/');  // Replace with your actual backend endpoint
+      // if (!response.ok) {
+      //   throw new Error('Failed to fetch applications');
+      // }
+      console.log(response,'responsefaeaa');
+      const data = await response.json();
+      console.log(data,'dataewewerwrwer');
+      return data.data;  // Assuming your backend returns a list of applications
+    } catch (error) {
+      console.error('Error fetching applications:', error);
+    }
+  };
+  
   useEffect(() => {
     fetchApplications().then(setApplications);
   }, []);
@@ -176,8 +193,9 @@ const ApplicationManagement = () => {
     setSortConfig({ key, direction });
   };
 
-  const sortedApplications = React.useMemo(() => {
-    let sortableItems = [...applications];
+  const sortedApplications = useMemo(() => {
+    let sortableItems = Array.isArray(applications) ? [...applications] : [];
+    console.log(sortableItems,'sortableItemssdfsfewfef');
     if (sortConfig.key !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -191,6 +209,7 @@ const ApplicationManagement = () => {
     }
     return sortableItems;
   }, [applications, sortConfig]);
+  console.log(sortedApplications,'sortedApplicationsadfadas');
 
   const filteredApplications = sortedApplications.filter(app => {
     return Object.entries(filters).some(([key, value]) => {
@@ -201,6 +220,7 @@ const ApplicationManagement = () => {
       return !value && appValue?.toString().toLowerCase().includes(searchTerm.toLowerCase());
     });
   });
+  console.log(filteredApplications,'filteredApplicationsafad');
 
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
@@ -211,7 +231,7 @@ const ApplicationManagement = () => {
     setShowDropdown(false); // Close the dropdown after selection
   };
   const navigate = useNavigate();
-
+  console.log('djdjjiwoffnsdsdsdoisdsd');
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
@@ -247,6 +267,12 @@ const ApplicationManagement = () => {
                   onClick={() => handleSelect('/import/spreadsheet')}
                 >
                   Import Spreadsheet
+                </button>
+                <button
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  onClick={() => handleSelect('/create/candidate')}
+                >
+                  Create Candidate
                 </button>
               </div>
             )}

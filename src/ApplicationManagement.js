@@ -66,6 +66,12 @@ const Navbar = () => {
             Job Openings
           </button>
           <button
+            onClick={() => handleRedirect('/job-list')}
+            className="hover:bg-blue-700 px-3 py-2 rounded"
+          >
+            Job list
+          </button>
+          <button
             onClick={toggleJobOpeningsDropdown} // Toggle dropdown on button click
             className="hover:bg-blue-700 px-3 py-2 rounded"
           >

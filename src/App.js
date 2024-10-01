@@ -4,11 +4,13 @@ import ApplicationManagement from './ApplicationManagement'
 import { ImportResume, ImportSpreadsheet } from './ImportPages';
 import CreateJobOpening from './CreateJobOpening';
 import ImportJobOpenings from './ImportJobOpenings';
+import JobList from './JobList';
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<ApplicationManagement />} />
+        <Route path="/job-list" element={<JobList />} />
         <Route path="/import/resume" element={<ImportResume />} />
         <Route path="/import/spreadsheet" element={<ImportSpreadsheet />} />
         <Route path="/create/job-opening" element={<CreateJobOpening />} />

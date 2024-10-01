@@ -4,6 +4,8 @@ import ApplicationManagement from './ApplicationManagement'
 import { ImportResume, ImportSpreadsheet } from './ImportPages';
 import CreateJobOpening from './CreateJobOpening';
 import ImportJobOpenings from './ImportJobOpenings';
+import CreateCandidateForm from './createCandidateForm';
+
 function App() {
   return (
     <Router>
@@ -13,6 +15,7 @@ function App() {
         <Route path="/import/spreadsheet" element={<ImportSpreadsheet />} />
         <Route path="/create/job-opening" element={<CreateJobOpening />} />
         <Route path="/import/job-openings" element={<ImportJobOpenings />} />
+        <Route path="/create/candidate" element={<CreateCandidateForm />} />
       </Routes>
     </Router>
   );

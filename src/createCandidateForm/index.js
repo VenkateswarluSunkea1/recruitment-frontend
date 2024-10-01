@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles.css';
+import Navbar from '../utils/Navbar';
 
 const CreateCandidateForm = () => {
   const [formData, setFormData] = useState({
@@ -66,6 +67,8 @@ const CreateCandidateForm = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="form-container">
       <form onSubmit={handleSubmit}>
         <h2>Basic Info</h2>
@@ -273,6 +276,7 @@ const CreateCandidateForm = () => {
         <button type="submit">Submit</button>
       </form>
     </div>
+    </>
   );
 };
 

@@ -50,6 +50,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Navbar from './utils/Navbar';
 
 const ImportPage = ({ type }) => {
   const [file, setFile] = useState(null);
@@ -90,6 +91,8 @@ const ImportPage = ({ type }) => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Import from {type}</h2>
       <form onSubmit={handleSubmit}>
@@ -114,6 +117,7 @@ const ImportPage = ({ type }) => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 

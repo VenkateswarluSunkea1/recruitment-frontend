@@ -5,6 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
+import Navbar from "./utils/Navbar";
 
 const JobList = () => {
     const [jobs, setJobs] = useState([]); // State to hold job data
@@ -62,6 +63,7 @@ const JobList = () => {
 
     return (
         <div>
+            <Navbar />
             <Box sx={{ height: 400, width: '100%' }}>
                 <DataGrid
                     rows={displayedJobs}

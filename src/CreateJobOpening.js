@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import './JobOpeningForm.css';
 import JoditEditor from 'jodit-react';
 import axios from 'axios';
+import Navbar from './utils/Navbar';
 
 const JobOpeningForm = () => {
   const [formData, setFormData] = useState({
@@ -97,6 +98,8 @@ const JobOpeningForm = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <form className="job-opening-form p-6" onSubmit={handleSubmit}>
       <h2 className="text-xl font-semibold mb-4">Job Opening Information</h2>
       
@@ -436,6 +439,7 @@ const JobOpeningForm = () => {
         Save and Publish
       </button>
     </form>
+    </>
   );
   
 };

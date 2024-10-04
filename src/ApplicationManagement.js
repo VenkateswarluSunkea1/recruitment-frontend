@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronDown, Plus, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination } from '@mui/material';
+import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination ,Select,MenuItem, ButtonBase} from '@mui/material';
 import Navbar from './utils/Navbar';
 
 // Custom CSS for a more professional look
@@ -66,21 +66,183 @@ const styles = {
   },
 };
 
-const FilterSidebar = ({ filters, setFilters }) => (
-  <aside style={styles.sidebar}>
-    <h3 style={{ fontWeight: '600', marginBottom: '12px' }}>Filter Applications By</h3>
-    {Object.entries(filters).map(([key, value]) => (
-      <div key={key} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
-        <Checkbox
-          id={key}
-          checked={value}
-          onChange={() => setFilters(prev => ({ ...prev, [key]: !prev[key] }))}
-        />
-        <label htmlFor={key} style={{ fontSize: '0.875rem', color: '#333' }}>{key}</label>
-      </div>
-    ))}
-  </aside>
-);
+// const FilterSidebar = ({ filters, setFilters }) => (
+//   <aside style={styles.sidebar}>
+//     <h3 style={{ fontWeight: '600', marginBottom: '12px' }}>Filter Applications By</h3>
+//     {Object.entries(filters).map(([key, value]) => (
+//       <div key={key} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+//         <Checkbox
+//           id={key}
+//           checked={value}
+//           onChange={() => setFilters(prev => ({ ...prev, [key]: !prev[key] }))}
+//         />
+//         <label htmlFor={key} style={{ fontSize: '0.875rem', color: '#333' }}>{key}</label>
+//       </div>
+//     ))}
+//   </aside>
+// );
+
+const FilterSidebar = ({ filters, setFilters ,setApplications,setTotalCount}) => {
+  const [filterOptions, setFilterOptions] = useState(
+    Object.keys(filters).reduce((acc, key) => {
+      acc[key] = { open: false, option: '', value: '' };
+      return acc;
+    }, {})
+  );
+  const [selectedFilter, setSelectedFilter] = useState({}); // State for selected filter options and input values
+  const [clearFilters, setClearFilters] = useState(false); // To track if we are clearing filters
+
+  console.log(filterOptions,'filterOptionseaeweeqeqwe');
+  const handleCheckboxChange = (key) => {
+    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+    setFilterOptions((prev) => ({
+      ...prev,
+      [key]: { ...prev[key], open: !prev[key].open },
+    }));
+  };
+
+  const handleOptionChange = (key, option) => {
+    setFilterOptions((prev) => ({
+      ...prev,
+      [key]: { ...prev[key], option },
+    }));
+  };
+
+  const handleInputChange = (key, value) => {
+    setFilterOptions((prev) => ({
+      ...prev,
+      [key]: { ...prev[key], value },
+    }));
+  };
+
+  const applyFilters=async()=>{
+    console.log(filterOptions,'filterOptionsklasdalsd');
+    const activeFilters = Object.entries(filterOptions).reduce((acc, [key, { open, option, value }]) => {
+      if (open && value) { // Only include filters that are open and have a value
+        acc[key] = JSON.stringify({ option, value });
+      }
+      return acc;
+    }, {});
+    console.log(activeFilters,'activeFiltersasdskbdfsdf');
+    // Prepare the query parameters for the fetch request
+    const queryParams = new URLSearchParams({
+      ...activeFilters,
+      page: 1, // Add pagination if needed
+      limit: 5,
+    });
+    console.log(queryParams.toString(), 'queryParamscccccc');
+    try {
+      const response = await fetch(`http://localhost:8000/api/resumes?${queryParams}`);
+      console.log(response,'responselsafkbsdf');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      // Update your state with the filtered candidates
+
+      setApplications(data.data)
+      setTotalCount(data.total_count)
+    } catch (error) {
+      console.error('Error fetching candidates:', error);
+    }
+  }
+
+  useEffect(() => {
+  if (clearFilters) {
+    applyFilters();
+    setClearFilters(false);
+  }
+}, [filterOptions, clearFilters]);
+  return (
+    <div>
+    <aside style={{ width: '250px', padding: '16px', backgroundColor: '#fff', borderRadius: '8px' ,maxHeight:'550px',overflowY:'auto'}}>
+      <h3 style={{ fontWeight: '600', marginBottom: '12px' }}>Filter Applications By</h3>
+      {Object.entries(filters).map(([key, value]) => (
+        <div key={key} style={{ marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Checkbox
+              id={key}
+              checked={value}
+              onChange={() => handleCheckboxChange(key)}
+            />
+            <label htmlFor={key} style={{ fontSize: '0.875rem', color: '#333' }}>{key}</label>
+          </div>
+          {/* Show the select box and input field when the checkbox is checked */}
+          {filterOptions[key].open && (
+            <div style={{ marginLeft: '32px', marginTop: '10px' }}>
+              <Select
+                value={filterOptions[key].option}
+                onChange={(e) => handleOptionChange(key, e.target.value)}
+                displayEmpty
+                style={{ marginBottom: '10px', width: '100%' }}
+              >
+                <MenuItem value="">
+                  <em>Select Option</em>
+                </MenuItem>
+                <MenuItem value="is">is</MenuItem>
+                <MenuItem value="is_not">isn't</MenuItem>
+                <MenuItem value="contains">Contains</MenuItem>
+                <MenuItem value="not_contains">Does Not Contain</MenuItem>
+                <MenuItem value="starts_with">starts with</MenuItem>
+                <MenuItem value="ends_with">ends with</MenuItem>
+                <MenuItem value="is_empty">is empty</MenuItem>
+                <MenuItem value="is_not_empty">is not empty</MenuItem>
+              </Select>
+              <TextField
+                placeholder="Enter value"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={filterOptions[key].value}
+                onChange={(e) => handleInputChange(key, e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+      ))}
+    </aside>
+    <div>
+      <Button
+        variant="contained"
+        style={{ ...styles.button, ...styles.addButton }}
+        onClick={()=>applyFilters()}
+        on
+      >
+        Apply Filter
+      </Button>
+      <Button
+        // variant="contained"
+        style={{backgroundColor:'none'}}
+        onClick={() => {
+          setSelectedFilter({});
+          setFilters({
+            postingTitle: false,
+            name: false,
+            status: false,
+            rating: false,
+            pipeline: false,
+            city: false,
+            source: false,
+            'skill set': false,
+          });
+    
+          // Reset filterOptions to initial state and apply filters without any
+          const clearedFilters = Object.keys(filters).reduce((acc, key) => {
+            acc[key] = { open: false, option: '', value: '' }; // Resetting to initial state
+            return acc;
+          }, {});
+
+          setFilterOptions(clearedFilters); // Update state with cleared filters
+          setClearFilters(true);
+        }}
+      >
+        Clear
+      </Button>
+    </div>
+    </div>
+  );
+};
 
 const ApplicationTable = ({ applications, onSort }) => (
   <TableContainer component={Paper} style={styles.tableContainer}>
@@ -125,6 +287,7 @@ const ApplicationManagement = () => {
     'pipeline': false,
     'city': false,
     'source': false,
+    'skill set':false,
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -226,7 +389,7 @@ const ApplicationManagement = () => {
         </div>
 
         <div className="flex space-x-6">
-          <FilterSidebar filters={filters} setFilters={setFilters} />
+          <FilterSidebar filters={filters} setFilters={setFilters} setApplications={setApplications} setTotalCount={setTotalCount}/>
           <section className="flex-grow">
             <ApplicationTable applications={filteredApplications} onSort={handleSort} />
             <TablePagination

@@ -3,7 +3,7 @@ import { ChevronDown, Plus, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination ,Select,MenuItem, ButtonBase} from '@mui/material';
 import Navbar from './utils/Navbar';
-
+import ApplicationOverview from './ApplicationOverview'
 // Custom CSS for a more professional look
 const styles = {
   container: {
@@ -66,22 +66,6 @@ const styles = {
   },
 };
 
-// const FilterSidebar = ({ filters, setFilters }) => (
-//   <aside style={styles.sidebar}>
-//     <h3 style={{ fontWeight: '600', marginBottom: '12px' }}>Filter Applications By</h3>
-//     {Object.entries(filters).map(([key, value]) => (
-//       <div key={key} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
-//         <Checkbox
-//           id={key}
-//           checked={value}
-//           onChange={() => setFilters(prev => ({ ...prev, [key]: !prev[key] }))}
-//         />
-//         <label htmlFor={key} style={{ fontSize: '0.875rem', color: '#333' }}>{key}</label>
-//       </div>
-//     ))}
-//   </aside>
-// );
-
 const FilterSidebar = ({ filters, setFilters ,setApplications,setTotalCount}) => {
   const [filterOptions, setFilterOptions] = useState(
     Object.keys(filters).reduce((acc, key) => {
@@ -130,10 +114,8 @@ const FilterSidebar = ({ filters, setFilters ,setApplications,setTotalCount}) =>
       page: 1, // Add pagination if needed
       limit: 5,
     });
-    console.log(queryParams.toString(), 'queryParamscccccc');
     try {
       const response = await fetch(`http://localhost:8000/api/resumes?${queryParams}`);
-      console.log(response,'responselsafkbsdf');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -244,7 +226,7 @@ const FilterSidebar = ({ filters, setFilters ,setApplications,setTotalCount}) =>
   );
 };
 
-const ApplicationTable = ({ applications, onSort }) => (
+const ApplicationTable = ({ applications, onSort ,onRowClick}) => (
   <TableContainer component={Paper} style={styles.tableContainer}>
     <Table>
       <TableHead>
@@ -258,7 +240,7 @@ const ApplicationTable = ({ applications, onSort }) => (
       </TableHead>
       <TableBody>
         {applications.map((app) => (
-          <TableRow key={app.id} style={styles.tableRow}>
+          <TableRow key={app.id} style={styles.tableRow} onClick={() => onRowClick(app)}>
             <TableCell>{'\u2B50'.repeat(app.rating)}</TableCell>
             <TableCell>{app.name}</TableCell>
             <TableCell>{app.pipeline}</TableCell>
@@ -350,6 +332,12 @@ const ApplicationManagement = () => {
     setShowDropdown(false);
   };
 
+  const [selectedApplication, setSelectedApplication] = useState(null);
+
+  const handleRowClick = (app) => {
+    setSelectedApplication(app); // Set the clicked application to be displayed
+    navigate('/application/overview', { state: { application: app } }); // Pass app data via state
+  };
   return (
     <div style={styles.container}>
       <Navbar />
@@ -391,7 +379,8 @@ const ApplicationManagement = () => {
         <div className="flex space-x-6">
           <FilterSidebar filters={filters} setFilters={setFilters} setApplications={setApplications} setTotalCount={setTotalCount}/>
           <section className="flex-grow">
-            <ApplicationTable applications={filteredApplications} onSort={handleSort} />
+            <ApplicationTable applications={filteredApplications} onSort={handleSort} onRowClick={handleRowClick}/>
+            {/* <ApplicationOverview application={selectedApplication} /> */}
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"

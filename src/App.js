@@ -6,6 +6,7 @@ import CreateJobOpening from './CreateJobOpening';
 import ImportJobOpenings from './ImportJobOpenings';
 import CreateCandidateForm from './createCandidateForm';
 import JobList from './JobList';
+import ApplicationOverview from './ApplicationOverview';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/create/job-opening" element={<CreateJobOpening />} />
         <Route path="/import/job-openings" element={<ImportJobOpenings />} />
         <Route path="/create/candidate" element={<CreateCandidateForm />} />
+        <Route path="/application/overview" element={<ApplicationOverview />} />
       </Routes>
     </Router>
   );

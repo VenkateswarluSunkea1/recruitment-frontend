@@ -395,13 +395,16 @@ const ApplicationManagement = () => {
       // const response = await fetch(
       //   `http://localhost:8000/api/resumes?page=${page + 1}&limit=${limit}`
       // );
+
       const response = await axiosInstance.get("/resumes", {
         params: {
           page: page + 1,
           limit: limit,
         },
       });
-      const data = await response.json();
+
+      // const data = await response.json();
+      const data = response.data;
       setApplications(data.data);
       setTotalCount(data.total_count);
     } catch (error) {

@@ -24,6 +24,12 @@ const Navbar = () => {
           </div>
           <div className="hidden md:flex space-x-4">
             <button
+              onClick={() => handleRedirect('/')} // Toggle dropdown on button click
+              className="hover:bg-blue-700 px-3 py-2 rounded"
+            >
+              Home
+            </button>
+            <button
               onClick={toggleJobOpeningsDropdown} // Toggle dropdown on button click
               className="hover:bg-blue-700 px-3 py-2 rounded"
             >

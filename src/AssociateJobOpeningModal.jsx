@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -10,10 +10,26 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CircularProgress,
 } from "@mui/material";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
+import axios from "axios";
 
-const AssociateJobOpeningModal = () => {
+const styles = {
+  inputLabel: {
+    fontSize: "14px", // Adjust size if needed
+    color: "#888888", // Similar to the one in your design
+    marginBottom: "5px", // Spacing between label and input
+  },
+  select: {
+    backgroundColor: "#f7f7f7", // Matches the light background
+    padding: "12px", // Similar padding for the text
+    borderRadius: "4px", // Rounded edges
+    border: "1px solid #cccccc", // Light border color
+  },
+};
+
+const AssociateJobOpeningModal = ({selectedRows}) => {
   const [open, setOpen] = useState(false);
   const [jobOpening, setJobOpening] = useState(""); // To handle job opening selection
   const [applicationStatus, setApplicationStatus] = useState("Associated"); // Default application status
@@ -22,20 +38,66 @@ const AssociateJobOpeningModal = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleAssociate = () => {
-    // Handle associate logic here
-    console.log({
+  const handleAssociate = async () => {
+    const job_id = jobOpening; // Your selected job id
+    const resume_ids = selectedRows; // Your selected resume ids
+
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/associate-resumes/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            job_id,
+            resume_ids,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      console.log(data.message,'testing123'); // Handle success message
+    } catch (error) {
+      console.error("Error associating resumes:", error); // Handle error
+    }
+    console.log(
       jobOpening,
       applicationStatus,
       comments,
-    });
+      "fjksdfkbsdfshdbfkbsdf"
+    );
     // Close modal after handling
     handleClose();
   };
+  const [jobs, setJobs] = useState();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/jobs/`);
+        console.log(response.data, "assd"); // Log the entire response
+        setJobs(response.data); // Adjust according to your API response structure
+      } catch (err) {
+        setError(err); // Set error state if the request fails
+      } finally {
+        setLoading(false); // Set loading to false regardless of success or failure
+      }
+    };
+
+    fetchJobs();
+  }, []); // Fetch jobs when the current page changes
+  console.log(jobs, "jobsslsdlferbta");
   return (
     <React.Fragment>
-      <IconButton onClick={handleOpen} color="primary" aria-label="associate-job">
+      <IconButton
+        onClick={handleOpen}
+        color="primary"
+        aria-label="associate-job"
+      >
         <WorkOutlineIcon />
       </IconButton>
       <Modal
@@ -62,7 +124,7 @@ const AssociateJobOpeningModal = () => {
           </Typography>
 
           {/* Choose Job Opening */}
-          <FormControl fullWidth sx={{ mt: 2 }}>
+          {/* <FormControl fullWidth sx={{ mt: 2 }}>
             <TextField
               label="Choose Job Opening"
               value={jobOpening}
@@ -75,11 +137,43 @@ const AssociateJobOpeningModal = () => {
                 ),
               }}
             />
+          </FormControl> */}
+
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="job-opening-label">Choose Job Opening</InputLabel>
+            {loading ? (
+              <CircularProgress /> // Show a loading spinner while fetching jobs
+            ) : (
+              <Select
+                labelId="job-opening-label"
+                value={jobOpening}
+                onChange={(e) => setJobOpening(e.target.value)}
+                label="Choose Job Opening"
+                endAdornment={
+                  <IconButton edge="end">
+                    <WorkOutlineIcon />
+                  </IconButton>
+                }
+              >
+                {jobs.map((job) => (
+                  <MenuItem key={job.id} value={job.id}>
+                    {job.posting_title}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+            {error && (
+              <p style={{ color: "red" }}>
+                Error fetching jobs: {error.message}
+              </p>
+            )}
           </FormControl>
 
           {/* Select Application Status */}
           <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel id="application-status-label">Select Application Status</InputLabel>
+            <InputLabel id="application-status-label">
+              Select Application Status
+            </InputLabel>
             <Select
               labelId="application-status-label"
               value={applicationStatus}
@@ -120,33 +214,6 @@ const AssociateJobOpeningModal = () => {
 
 export default AssociateJobOpeningModal;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import React, { useState } from "react";
 // import {
 //   Button,
@@ -165,8 +232,8 @@ export default AssociateJobOpeningModal;
 
 // const AssociateJobOpeningModal = () => {
 //   const [open, setOpen] = useState(false);
-//   const [jobOpening, setJobOpening] = useState(""); 
-//   const [applicationStatus, setApplicationStatus] = useState("Associated"); 
+//   const [jobOpening, setJobOpening] = useState("");
+//   const [applicationStatus, setApplicationStatus] = useState("Associated");
 //   const [comments, setComments] = useState(""); // To handle comments
 
 //   const jobOptions = [

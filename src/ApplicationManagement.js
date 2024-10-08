@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronDown, Plus, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination ,Select,MenuItem, ButtonBase} from '@mui/material';
+import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination ,Select,MenuItem, ButtonBase,Toolbar,Typography} from '@mui/material';
 import Navbar from './utils/Navbar';
-import ApplicationOverview from './ApplicationOverview'
+import ApplicationOverview from './ApplicationOverview';
+import AssociateJobOpeningModal from './AssociateJobOpeningModal';
+
 // Custom CSS for a more professional look
 const styles = {
   container: {
@@ -226,35 +228,108 @@ const FilterSidebar = ({ filters, setFilters ,setApplications,setTotalCount}) =>
   );
 };
 
-const ApplicationTable = ({ applications, onSort ,onRowClick}) => (
-  <TableContainer component={Paper} style={styles.tableContainer}>
-    <Table>
-      <TableHead>
-        <TableRow>
-          {['RATING', 'APPLICATION NAME', 'CITY', 'CANDIDATE STAGE', 'APPLICATION ID', 'POSTING TITLE', 'SOURCE', 'CANDIDATE OWNER'].map((header) => (
-            <TableCell key={header} onClick={() => onSort(header.toLowerCase())} style={styles.tableHeader}>
-              {header} <ChevronDown className="inline h-4 w-4" />
+// const ApplicationTable = ({ applications, onSort }) => (
+//   <TableContainer component={Paper} style={styles.tableContainer}>
+//     <Table>
+//       <TableHead>
+//         <TableRow>
+//           {['RATING', 'APPLICATION NAME', 'CITY', 'CANDIDATE STAGE', 'APPLICATION ID', 'POSTING TITLE', 'SOURCE', 'CANDIDATE OWNER'].map((header) => (
+//             <TableCell key={header} onClick={() => onSort(header.toLowerCase())} style={styles.tableHeader}>
+//               {header} <ChevronDown className="inline h-4 w-4" />
+//             </TableCell>
+//           ))}
+//         </TableRow>
+//       </TableHead>
+//       <TableBody>
+//         {applications.map((app) => (
+//           <TableRow key={app.id} style={styles.tableRow}>
+//             <TableCell>{'\u2B50'.repeat(app.rating)}</TableCell>
+//             <TableCell>{app.name}</TableCell>
+//             <TableCell>{app.pipeline}</TableCell>
+//             <TableCell>{app.status}</TableCell>
+//             <TableCell>{app.id}</TableCell>
+//             <TableCell>{app.postingTitle}</TableCell>
+//             <TableCell>{app.source}</TableCell>
+//             <TableCell>{app.candidateOwner}</TableCell>
+//           </TableRow>
+//         ))}
+//       </TableBody>
+//     </Table>
+//   </TableContainer>
+// );
+
+const ApplicationTable = ({ applications, onSort ,selectedRows,setSelectedRows,onClick}) => {
+
+  // Handle row selection
+  const handleRowSelect = (id) => {
+    setSelectedRows((prevSelectedRows) =>
+      prevSelectedRows.includes(id)
+        ? prevSelectedRows.filter((rowId) => rowId !== id)
+        : [...prevSelectedRows, id]
+    );
+  };
+
+  // Handle select all rows
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      const allRowIds = applications.map((app) => app.id);
+      setSelectedRows(allRowIds); // Select all rows
+    } else {
+      setSelectedRows([]); // Deselect all rows
+    }
+  };
+
+  const isAllSelected = selectedRows.length === applications.length;
+
+  console.log(selectedRows,'selectedRowswerwewerwer');
+
+  return (
+    <TableContainer component={Paper} style={styles.tableContainer}>
+      <Table stickyHeader>
+        <TableHead>
+          <TableRow>
+            {/* Checkbox for Select All */}
+            <TableCell padding="checkbox">
+              <Checkbox
+                indeterminate={selectedRows.length > 0 && selectedRows.length < applications.length}
+                checked={isAllSelected}
+                onChange={handleSelectAll}
+              />
             </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {applications.map((app) => (
-          <TableRow key={app.id} style={styles.tableRow} onClick={() => onRowClick(app)}>
-            <TableCell>{'\u2B50'.repeat(app.rating)}</TableCell>
-            <TableCell>{app.name}</TableCell>
-            <TableCell>{app.pipeline}</TableCell>
-            <TableCell>{app.status}</TableCell>
-            <TableCell>{app.id}</TableCell>
-            <TableCell>{app.postingTitle}</TableCell>
-            <TableCell>{app.source}</TableCell>
-            <TableCell>{app.candidateOwner}</TableCell>
+            {/* Table Headers */}
+            {['RATING', 'APPLICATION NAME', 'CITY', 'CANDIDATE STAGE', 'APPLICATION ID', 'POSTING TITLE', 'SOURCE', 'CANDIDATE OWNER'].map((header) => (
+              <TableCell key={header} onClick={() => onSort(header.toLowerCase())} style={styles.tableHeader}>
+                {header} <ChevronDown className="inline h-4 w-4" />
+              </TableCell>
+            ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
-);
+        </TableHead>
+        <TableBody>
+          {applications.map((app) => (
+            <TableRow key={app.id} style={styles.tableRow} selected={selectedRows.includes(app.id)} onClick={() => onClick(app)}>
+              {/* Checkbox for Row Selection */}
+              <TableCell padding="checkbox">
+                <Checkbox
+                  checked={selectedRows.includes(app.id)}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={() => handleRowSelect(app.id)}
+                />
+              </TableCell>
+              <TableCell>{'\u2B50'.repeat(app.rating)}</TableCell>
+              <TableCell>{app.name}</TableCell>
+              <TableCell>{app.pipeline}</TableCell>
+              <TableCell>{app.status}</TableCell>
+              <TableCell>{app.id}</TableCell>
+              <TableCell>{app.postingTitle}</TableCell>
+              <TableCell>{app.source}</TableCell>
+              <TableCell>{app.candidateOwner}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
 
 const ApplicationManagement = () => {
   const [applications, setApplications] = useState([]);
@@ -331,6 +406,7 @@ const ApplicationManagement = () => {
     navigate(path);
     setShowDropdown(false);
   };
+  const [selectedRows, setSelectedRows] = useState([]); // Track selected rows
 
   const [selectedApplication, setSelectedApplication] = useState(null);
 
@@ -341,6 +417,32 @@ const ApplicationManagement = () => {
   return (
     <div style={styles.container}>
       <Navbar />
+
+      {/* Conditionally render the top action bar when rows are selected */}
+      {selectedRows.length > 0 && (
+        <Toolbar
+          sx={{
+            backgroundColor: "#f5f5f5",
+            padding: "10px",
+            marginBottom: "10px",
+          }}
+        >
+          <Typography variant="subtitle1" sx={{ flex: "1 1 100%" }}>
+            {selectedRows.length} Candidate{selectedRows.length > 1 ? "s" : ""}{" "}
+            selected
+          </Typography>{" "}
+          <Button
+            onClick={() => {
+              setSelectedRows([]);
+            }}
+            variant="text"
+          >
+            clear
+          </Button>
+          <AssociateJobOpeningModal selectedRows={selectedRows}/>
+        </Toolbar>
+      )}
+
       <main style={styles.main}>
         <h2 style={styles.header}>Applications</h2>
         <div style={styles.searchContainer}>
@@ -379,8 +481,7 @@ const ApplicationManagement = () => {
         <div className="flex space-x-6">
           <FilterSidebar filters={filters} setFilters={setFilters} setApplications={setApplications} setTotalCount={setTotalCount}/>
           <section className="flex-grow">
-            <ApplicationTable applications={filteredApplications} onSort={handleSort} onRowClick={handleRowClick}/>
-            {/* <ApplicationOverview application={selectedApplication} /> */}
+            <ApplicationTable applications={filteredApplications} onSort={handleSort} onClick={handleRowClick}selectedRows={selectedRows} setSelectedRows={setSelectedRows}/>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"

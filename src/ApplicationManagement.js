@@ -15,10 +15,8 @@ import {
   TablePagination,
   Select,
   MenuItem,
-  ButtonBase,
 } from "@mui/material";
 import Navbar from "./utils/Navbar";
-import ApplicationOverview from "./ApplicationOverview";
 // Custom CSS for a more professional look
 const styles = {
   container: {
@@ -162,7 +160,7 @@ const FilterSidebar = ({
       applyFilters();
       setClearFilters(false);
     }
-  }, [filterOptions, clearFilters]);
+  }, [filterOptions, clearFilters,applyFilters]);
   return (
     <div>
       <aside
@@ -401,7 +399,7 @@ const ApplicationManagement = () => {
   };
 
   const [selectedApplication, setSelectedApplication] = useState(null);
-
+  console.log(selectedApplication,'selectedApplication');
   const handleRowClick = (app) => {
     setSelectedApplication(app); // Set the clicked application to be displayed
     navigate("/application/overview", { state: { application: app } }); // Pass app data via state

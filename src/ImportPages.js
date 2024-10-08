@@ -49,7 +49,6 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Navbar from './utils/Navbar';
 import axiosInstance from './utils/axiosInstance';
 

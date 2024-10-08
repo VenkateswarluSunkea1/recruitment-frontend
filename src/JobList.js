@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 // import Paper from '@mui/material/Paper';
 import Pagination from "@mui/material/Pagination";

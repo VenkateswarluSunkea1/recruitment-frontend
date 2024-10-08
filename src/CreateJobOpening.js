@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './JobOpeningForm.css';
 import JoditEditor from 'jodit-react';
-import axios from 'axios';
 import Navbar from './utils/Navbar';
 import axiosInstance from './utils/axiosInstance';
 

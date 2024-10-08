@@ -199,7 +199,7 @@ const FilterSidebar = ({
     } catch (error) {
       console.error("Error fetching candidates:", error);
     }
-  }, [filterOptions]); // Add filterOptions as a dependency
+  }, [filterOptions, setApplications, setTotalCount]); // Add filterOptions as a dependency
 
   useEffect(() => {
     if (clearFilters) {

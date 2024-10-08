@@ -6,6 +6,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Navbar from "./utils/Navbar";
+import axiosInstance from "./utils/axiosInstance";
 
 const JobList = () => {
   const [jobs, setJobs] = useState([]); // State to hold job data
@@ -18,15 +19,18 @@ const JobList = () => {
     const fetchJobs = async () => {
       try {
         // const response = await axios.get(`https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/jobs/`);
-        const response = await axios.get(
-            'https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/jobs/',
-            {
-              headers: {
-                'ngrok-skip-browser-warning': '69420',
-                'Accept': 'application/json',
-              },
-            }
-          );
+
+        // const response = await axios.get(
+        //     'https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/jobs/',
+        //     {
+        //       headers: {
+        //         'ngrok-skip-browser-warning': '69420',
+        //         'Accept': 'application/json',
+        //       },
+        //     }
+        //   );
+        const response = await axiosInstance.get('/jobs');
+
         console.log(response.data);
         setJobs(response.data); // Assuming response.data contains the list of jobs
       } catch (err) {

@@ -51,6 +51,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './utils/Navbar';
+import axiosInstance from './utils/axiosInstance';
 
 const ImportPage = ({ type }) => {
   const [file, setFile] = useState(null);
@@ -75,9 +76,14 @@ const ImportPage = ({ type }) => {
 
     try {
       // Change the URL to your backend upload endpoint
-      const response = await axios.post('http://localhost:8000/api/upload/', formData, {
+      // const response = await axios.post('http://localhost:8000/api/upload/', formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // });
+      const response = await axiosInstance.post('upload/', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',  // Additional header for file upload
         },
       });
 

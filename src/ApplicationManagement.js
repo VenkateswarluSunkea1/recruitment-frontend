@@ -17,6 +17,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import Navbar from "./utils/Navbar";
+import axiosInstance from "./utils/axiosInstance";
 // Custom CSS for a more professional look
 const styles = {
   container: {
@@ -185,9 +186,14 @@ const FilterSidebar = ({
     });
 
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/resumes?${queryParams}`
-      );
+      // const response = await fetch(
+      //   `http://localhost:8000/api/resumes?${queryParams}`
+      // );
+      const response = await axiosInstance.get(`/resumes`, {
+        params: {
+          ...queryParams, // Assuming queryParams is an object
+        },
+      });
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -386,9 +392,15 @@ const ApplicationManagement = () => {
   // Fetch applications from the backend with pagination
   const fetchApplications = async (page = 0, limit = 10) => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/resumes?page=${page + 1}&limit=${limit}`
-      ); // Use 1-indexed for the API
+      // const response = await fetch(
+      //   `http://localhost:8000/api/resumes?page=${page + 1}&limit=${limit}`
+      // );
+      const response = await axiosInstance.get("/resumes", {
+        params: {
+          page: page + 1,
+          limit: limit,
+        },
+      });
       const data = await response.json();
       setApplications(data.data);
       setTotalCount(data.total_count);
@@ -445,7 +457,7 @@ const ApplicationManagement = () => {
   };
 
   const [selectedApplication, setSelectedApplication] = useState(null);
-  console.log(selectedApplication,'selectedApplication');
+  console.log(selectedApplication, "selectedApplication");
   const handleRowClick = (app) => {
     setSelectedApplication(app); // Set the clicked application to be displayed
     navigate("/application/overview", { state: { application: app } }); // Pass app data via state

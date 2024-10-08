@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { ChevronDown, Plus, MoreVertical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -118,8 +118,53 @@ const FilterSidebar = ({
     }));
   };
 
-  const applyFilters = async () => {
-    console.log(filterOptions, "filterOptionsklasdalsd");
+  // const applyFilters = async () => {
+  //   console.log(filterOptions, "filterOptionsklasdalsd");
+  //   const activeFilters = Object.entries(filterOptions).reduce(
+  //     (acc, [key, { open, option, value }]) => {
+  //       if (open && value) {
+  //         // Only include filters that are open and have a value
+  //         acc[key] = JSON.stringify({ option, value });
+  //       }
+  //       return acc;
+  //     },
+  //     {}
+  //   );
+  //   console.log(activeFilters, "activeFiltersasdskbdfsdf");
+  //   // Prepare the query parameters for the fetch request
+  //   const queryParams = new URLSearchParams({
+  //     ...activeFilters,
+  //     page: 1, // Add pagination if needed
+  //     limit: 5,
+  //   });
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:8000/api/resumes?${queryParams}`
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+
+  //     const data = await response.json();
+  //     // Update your state with the filtered candidates
+
+  //     setApplications(data.data);
+  //     setTotalCount(data.total_count);
+  //   } catch (error) {
+  //     console.error("Error fetching candidates:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (clearFilters) {
+  //     applyFilters();
+  //     setClearFilters(false);
+  //   }
+  // }, [filterOptions, clearFilters,applyFilters]);
+
+  const applyFilters = useCallback(async () => {
+    console.log(filterOptions, "filterOptions");
+
     const activeFilters = Object.entries(filterOptions).reduce(
       (acc, [key, { open, option, value }]) => {
         if (open && value) {
@@ -130,13 +175,15 @@ const FilterSidebar = ({
       },
       {}
     );
-    console.log(activeFilters, "activeFiltersasdskbdfsdf");
+    console.log(activeFilters, "activeFilters");
+
     // Prepare the query parameters for the fetch request
     const queryParams = new URLSearchParams({
       ...activeFilters,
       page: 1, // Add pagination if needed
       limit: 5,
     });
+
     try {
       const response = await fetch(
         `http://localhost:8000/api/resumes?${queryParams}`
@@ -147,20 +194,19 @@ const FilterSidebar = ({
 
       const data = await response.json();
       // Update your state with the filtered candidates
-
       setApplications(data.data);
       setTotalCount(data.total_count);
     } catch (error) {
       console.error("Error fetching candidates:", error);
     }
-  };
+  }, [filterOptions]); // Add filterOptions as a dependency
 
   useEffect(() => {
     if (clearFilters) {
       applyFilters();
       setClearFilters(false);
     }
-  }, [filterOptions, clearFilters,applyFilters]);
+  }, [clearFilters, applyFilters]);
   return (
     <div>
       <aside

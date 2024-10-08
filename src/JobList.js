@@ -17,7 +17,7 @@ const JobList = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/api/jobs/`);
+                const response = await axios.get(`https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/jobs/`);
                 console.log(response.data);
                 setJobs(response.data); // Assuming response.data contains the list of jobs
             } catch (err) {

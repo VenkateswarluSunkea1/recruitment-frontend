@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import './JobOpeningForm.css';
 import JoditEditor from 'jodit-react';
-import axios from 'axios';
 import Navbar from './utils/Navbar';
+import axiosInstance from './utils/axiosInstance';
 
 const JobOpeningForm = () => {
   const [formData, setFormData] = useState({
@@ -90,7 +90,8 @@ const JobOpeningForm = () => {
     };
   
     try {
-      const response = await axios.post('http://localhost:8000/api/jobs/', adjustedData);
+      // const response = await axios.post('http://localhost:8000/api/jobs/', adjustedData);
+      const response = await axiosInstance.post('/jobs/', adjustedData);
       console.log("Job posted:", response.data);
     } catch (error) {
       console.error("There was an error posting the job:", error.response.data);

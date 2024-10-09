@@ -85,6 +85,8 @@ const FilterSidebar = ({
   setFilters,
   setApplications,
   setTotalCount,
+  page,
+  rowsPerPage,
 }) => {
   const [filterOptions, setFilterOptions] = useState(
     Object.keys(filters).reduce((acc, key) => {
@@ -181,24 +183,38 @@ const FilterSidebar = ({
     // Prepare the query parameters for the fetch request
     const queryParams = new URLSearchParams({
       ...activeFilters,
-      page: 1, // Add pagination if needed
-      limit: 5,
+      page: page+1, // Add pagination if needed
+      limit: rowsPerPage,
     });
-
+    console.log(queryParams, "queryParamsasdad");
     try {
       // const response = await fetch(
       //   `http://localhost:8000/api/resumes?${queryParams}`
       // );
-      const response = await axiosInstance.get(`/resumes`, {
-        params: {
-          ...queryParams, // Assuming queryParams is an object
-        },
-      });
+
+      const response = await fetch(
+        `https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/resumes?${queryParams}`, 
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '69420',
+          }
+        }
+      );
+
+      // const response = await axiosInstance.get(`/resumes`, {
+      //   params: {
+      //     ...queryParams, // Assuming queryParams is an object
+      //   },
+      // });
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
+      // const data = await response.data;
+      console.log(data, "datakabfkabfkasbd");
       // Update your state with the filtered candidates
       setApplications(data.data);
       setTotalCount(data.total_count);
@@ -208,11 +224,12 @@ const FilterSidebar = ({
   }, [filterOptions, setApplications, setTotalCount]); // Add filterOptions as a dependency
 
   useEffect(() => {
+    console.log("endmhfbsdfbsdfbsd");
     if (clearFilters) {
       applyFilters();
       setClearFilters(false);
     }
-  }, [clearFilters, applyFilters]);
+  }, [filterOptions, clearFilters, applyFilters,page,rowsPerPage]);
   return (
     <div>
       <aside
@@ -404,7 +421,7 @@ const ApplicationManagement = () => {
       });
 
       // const data = await response.json();
-      const data = response.data;
+      const data = await response.data;
       setApplications(data.data);
       setTotalCount(data.total_count);
     } catch (error) {
@@ -524,6 +541,8 @@ const ApplicationManagement = () => {
             setFilters={setFilters}
             setApplications={setApplications}
             setTotalCount={setTotalCount}
+            page={page}
+            rowsPerPage={rowsPerPage}
           />
           <section className="flex-grow">
             <ApplicationTable

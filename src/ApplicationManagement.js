@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ChevronDown, Plus, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination ,Select,MenuItem, ButtonBase,Toolbar,Typography} from '@mui/material';
+import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination ,Select,MenuItem,Toolbar,Typography} from '@mui/material';
 import Navbar from './utils/Navbar';
-import ApplicationOverview from './ApplicationOverview';
 import AssociateJobOpeningModal from './AssociateJobOpeningModal';
 import axiosInstance from './utils/axiosInstance';
 
@@ -210,7 +209,7 @@ const FilterSidebar = ({
     } catch (error) {
       console.error("Error fetching candidates:", error);
     }
-  }, [filterOptions, setApplications, setTotalCount]); // Add filterOptions as a dependency
+  }, [filterOptions, setApplications, setTotalCount,page,rowsPerPage]); // Add filterOptions as a dependency
 
   useEffect(() => {
     console.log("endmhfbsdfbsdfbsd");

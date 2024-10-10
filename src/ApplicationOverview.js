@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Card, CardContent, Typography, Button, Grid, Chip, Box, Divider, Paper, IconButton, List, ListItem, ListItemText
 } from '@mui/material';
@@ -55,6 +55,7 @@ const styles = {
 const ApplicationOverview = () => {
   const location = useLocation();
   const { application } = location.state || {};
+  const navigate = useNavigate();
 
   // Refs for each section
   const smsRef = useRef(null);
@@ -85,6 +86,9 @@ const ApplicationOverview = () => {
         <Paper sx={styles.leftSidebar}>
           <Typography variant="h6" component="h2">Quick Access</Typography>
           <List>
+            <ListItem button onClick={() => navigate('/applications')}>
+              <ListItemText primary="Applications" />
+            </ListItem>
             <ListItem button onClick={() => handleScrollToSection(smsRef)}>
               <ListItemText primary="SMS" />
             </ListItem>

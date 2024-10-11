@@ -74,7 +74,7 @@ const ApplicationOverview = () => {
   const [applications, setApplications] = useState(0);
   useEffect(() => {
     const fetchJobbs = async () => {
-      if (jobs.length > 0) {
+      if (jobs?.length > 0) {
         try {
           // const response = await axiosInstance.get(
           //   `get-jobs-by-ids/?job_ids=${jobs.join(",")}`
@@ -148,7 +148,7 @@ const ApplicationOverview = () => {
                         borderRadius: "4px",
                       }}
                     >
-                      {applications.length}
+                      {applications?.length}
                     </span>
                   </>
                 }

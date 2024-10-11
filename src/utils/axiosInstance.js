@@ -4,9 +4,11 @@ import axios from 'axios';
 
 // Create a base Axios instance
 const axiosInstance = axios.create({
-  baseURL: 'https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api',  // Your API base URL
+  // baseURL: 'https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api',
+  // baseURL:'http://34.131.114.47:8000/api',
+  baseURL:'http://127.0.0.1:8000/api',
   headers: {
-    'ngrok-skip-browser-warning': '69420',
+    // 'ngrok-skip-browser-warning': '69420',
     'Accept': 'application/json',
   },
 });

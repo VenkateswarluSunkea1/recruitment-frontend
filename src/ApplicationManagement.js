@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ChevronDown, Plus, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination ,Select,MenuItem, ButtonBase,Toolbar,Typography} from '@mui/material';
+import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, Button, TablePagination ,Select,MenuItem,Toolbar,Typography} from '@mui/material';
 import Navbar from './utils/Navbar';
-import ApplicationOverview from './ApplicationOverview';
 import AssociateJobOpeningModal from './AssociateJobOpeningModal';
 import axiosInstance from './utils/axiosInstance';
 
@@ -177,9 +176,9 @@ const FilterSidebar = ({
     });
     console.log(queryParams, "queryParamsasdad");
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/resumes?${queryParams}`
-      );
+      // const response = await fetch(
+      //   `http://localhost:8000/api/resumes?${queryParams}`
+      // );
 
       // const response = await fetch(
       //   `https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/resumes?${queryParams}`, 
@@ -190,6 +189,17 @@ const FilterSidebar = ({
       //     }
       //   }
       // );
+
+      const response = await fetch(
+        // `https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/resumes?${queryParams}`,
+        ` http://34.131.114.47:8000/api/resumes?${queryParams}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            // 'ngrok-skip-browser-warning': '69420',
+          }
+        }
+      );
 
       // const response = await axiosInstance.get(`/resumes`, {
       //   params: {
@@ -210,7 +220,7 @@ const FilterSidebar = ({
     } catch (error) {
       console.error("Error fetching candidates:", error);
     }
-  }, [filterOptions, setApplications, setTotalCount]); // Add filterOptions as a dependency
+  }, [filterOptions, setApplications, setTotalCount,page,rowsPerPage]); // Add filterOptions as a dependency
 
   useEffect(() => {
     console.log("endmhfbsdfbsdfbsd");

@@ -11,10 +11,11 @@ const JobList = () => {
   const [jobs, setJobs] = useState([]); // State to hold job data
   const [loading, setLoading] = useState(true); // State to handle loading state
   const [error, setError] = useState(null); // State to handle errors
-  const [currPage, setCurrPage] = useState(1); // State for current page
+  // const [currPage, setCurrPage] = useState(1); // State for current page
   const pageSize = 10; // State for page size
   const [totalJobs, setTotalJobs] = useState(0); // State for total jobs
   const [selectedRows, setSelectedRows] = useState([]); // State for selected rows
+  console.log(totalJobs,'totalJobs');
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -34,6 +35,7 @@ const JobList = () => {
 
         console.log(response.data);
         setJobs(response.data); // Assuming response.data contains the list of jobs
+        setTotalJobs(response?.data?.total_count); // Adjust accordingly
       } catch (err) {
         setError(err); // Set error state if the request fails
       } finally {
@@ -41,7 +43,7 @@ const JobList = () => {
       }
     };
     fetchJobs();
-  }, [currPage]);
+  }, []);
 
   // useEffect(() => {
   //   const fetchJobs = async () => {
@@ -62,18 +64,18 @@ const JobList = () => {
   //   fetchJobs();
   // }, [currPage]); // Fetch jobs once when the component mounts
 
-  const handleChangePage = (event, value) => {
-    setCurrPage(value); // Update the current page
-  };
+  // const handleChangePage = (event, value) => {
+  //   setCurrPage(value); // Update the current page
+  // };
 
   if (loading) {
     return <div>Loading...</div>; // Show loading indicator
   }
-  // Get jobs for the current page
-  const displayedJobs = jobs.slice(
-    (currPage - 1) * pageSize,
-    currPage * pageSize
-  );
+  // // Get jobs for the current page
+  // const displayedJobs = jobs.slice(
+  //   (currPage - 1) * pageSize,
+  //   currPage * pageSize
+  // );
 
   if (loading) {
     return <div>Loading...</div>; // Show loading indicator
@@ -87,7 +89,7 @@ const JobList = () => {
   }
 
   // const totalJobs = jobs.length; // Total number of jobs
-  const totalPages = Math.ceil(totalJobs / pageSize); // Calculate total pages
+  // const totalPages = Math.ceil(totalJobs / pageSize); // Calculate total pages
 
   // Define the columns for the DataGrid
   const columns = [

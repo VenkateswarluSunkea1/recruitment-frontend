@@ -15,19 +15,19 @@ import {
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import axios from "axios";
 
-const styles = {
-  inputLabel: {
-    fontSize: "14px", // Adjust size if needed
-    color: "#888888", // Similar to the one in your design
-    marginBottom: "5px", // Spacing between label and input
-  },
-  select: {
-    backgroundColor: "#f7f7f7", // Matches the light background
-    padding: "12px", // Similar padding for the text
-    borderRadius: "4px", // Rounded edges
-    border: "1px solid #cccccc", // Light border color
-  },
-};
+// const styles = {
+//   inputLabel: {
+//     fontSize: "14px",
+//     color: "#888888",
+//     marginBottom: "5px",
+//   },
+//   select: {
+//     backgroundColor: "#f7f7f7",
+//     padding: "12px",
+//     borderRadius: "4px",
+//     border: "1px solid #cccccc",
+//   },
+// };
 
 const AssociateJobOpeningModal = ({selectedRows}) => {
   const [open, setOpen] = useState(false);
@@ -44,7 +44,8 @@ const AssociateJobOpeningModal = ({selectedRows}) => {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/associate-resumes/",
+        // "http://localhost:8000/api/associate-resumes/",
+        "http://34.131.114.47:8000/api/associate-resumes/",
         {
           method: "POST",
           headers: {
@@ -78,7 +79,7 @@ const AssociateJobOpeningModal = ({selectedRows}) => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/jobs/`);
+        const response = await axios.get(`http://34.131.114.47:8000/api/jobs/`);
         console.log(response.data, "assd"); // Log the entire response
         setJobs(response.data); // Adjust according to your API response structure
       } catch (err) {

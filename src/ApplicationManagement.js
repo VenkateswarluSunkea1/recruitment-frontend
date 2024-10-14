@@ -192,7 +192,8 @@ const FilterSidebar = ({
 
       const response = await fetch(
         // `https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/resumes?${queryParams}`,
-        ` http://34.131.114.47:8000/api/resumes?${queryParams}`,
+        `http://34.131.163.216:8000/api/resumes?${queryParams}`,
+        // `http://localhost:8000/api/resumes?${queryParams}`,
         {
           headers: {
             'Content-Type': 'application/json',

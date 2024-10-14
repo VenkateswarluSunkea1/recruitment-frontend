@@ -1,39 +1,30 @@
 import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Toolbar, Typography, Button } from '@mui/material';
-import AssociateJobOpeningModal from './AssociateJobOpeningModal';
-
-const columns = [
-  { field: 'id', headerName: 'ID', width: 100 },
-  { field: 'applicationName', headerName: 'Application Name', width: 200 },
-  { field: 'rating', headerName: 'Rating', width: 100 },
-  { field: 'hiringPipeline', headerName: 'Hiring Pipeline', width: 200 },
-  { field: 'applicationStatus', headerName: 'Application Status', width: 180 },
-  { field: 'postingTitle', headerName: 'Posting Title', width: 200 },
-];
-
-const rows = [
-  {
-    id: 1,
-    applicationName: 'Java Developer',
-    rating: 5,
-    hiringPipeline: 'In Review',
-    applicationStatus: 'Associated',
-    postingTitle: 'Senior Java Developer',
-  },
-  {
-    id: 2,
-    applicationName: 'React Developer',
-    rating: 4,
-    hiringPipeline: 'Screening',
-    applicationStatus: 'Pending',
-    postingTitle: 'Frontend Developer',
-  },
-  // Add more rows as needed
-];
+import SendMailModal from './SendMailModal';
+import HiringPipeline from './HiringPipeline'; // Import the HiringPipeline component
 
 const ApplicationsPage = () => {
   const [selectedRows, setSelectedRows] = useState([]);
+  const [rows] = useState([
+    {
+      id: 1,
+      applicationName: 'Java Developer',
+      rating: 5,
+      hiringPipeline: 'Hired',
+      applicationStatus: 'Associated',
+      postingTitle: 'Senior Java Developer',
+    },
+    {
+      id: 2,
+      applicationName: 'React Developer',
+      rating: 4,
+      hiringPipeline: 'Submissions',
+      applicationStatus: 'Pending',
+      postingTitle: 'Frontend Developer',
+    },
+    // Add more rows as needed
+  ]);
 
   const handleRowSelectionChange = (newSelection) => {
     setSelectedRows(newSelection);
@@ -42,6 +33,21 @@ const ApplicationsPage = () => {
   const clearSelection = () => {
     setSelectedRows([]);
   };
+
+  // Define the columns without the stage change handler
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 100 },
+    { field: 'applicationName', headerName: 'Application Name', width: 200 },
+    { field: 'rating', headerName: 'Rating', width: 100 },
+    {
+      field: 'hiringPipeline',
+      headerName: 'Hiring Pipeline',
+      width: 300,
+      renderCell: (params) => <HiringPipeline currentStage={params.value} />,
+    },
+    { field: 'applicationStatus', headerName: 'Application Status', width: 180 },
+    { field: 'postingTitle', headerName: 'Posting Title', width: 200 },
+  ];
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -59,7 +65,7 @@ const ApplicationsPage = () => {
           <Button onClick={clearSelection} variant="text">
             Clear
           </Button>
-          <AssociateJobOpeningModal />
+          <SendMailModal />
         </Toolbar>
       )}
       <DataGrid

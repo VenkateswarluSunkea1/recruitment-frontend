@@ -17,6 +17,7 @@ import {
 import SmsIcon from "@mui/icons-material/Sms";
 import AddIcon from "@mui/icons-material/Add";
 import axiosInstance from "./utils/axiosInstance";
+import Navbar from "./utils/Navbar";
 
 const styles = {
   cardContainer: {
@@ -129,6 +130,8 @@ const ApplicationOverview = () => {
   // }, [jobs]);
 
   return (
+    <>
+    <Navbar />
     <Grid container spacing={2}>
       {/* Left Sidebar */}
       <Grid item xs={2}>
@@ -510,6 +513,7 @@ const ApplicationOverview = () => {
         </Card>
       </Grid>
     </Grid>
+    </>
   );
 };
 

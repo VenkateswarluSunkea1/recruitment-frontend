@@ -13,10 +13,19 @@ import {
   List,
   ListItem,
   ListItemText,
+  IconButton,
+  Tooltip,
+  Modal,
+  TextField,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import SmsIcon from "@mui/icons-material/Sms";
 import AddIcon from "@mui/icons-material/Add";
 import axiosInstance from "./utils/axiosInstance";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import TwitterIcon from "@mui/icons-material/Twitter"; // You can customize this as per the "X" logo
 
 const styles = {
   cardContainer: {
@@ -64,7 +73,75 @@ const styles = {
   },
 };
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: "8px",
+};
+
 const ApplicationOverview = () => {
+  const [open, setOpen] = useState(false);
+  const [profileUrl, setProfileUrl] = useState("");
+  const [platform, setPlatform] = useState(""); // State to track the clicked platform
+  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // Close menu handler
+  const handleMenuClose = () => setAnchorEl(null);
+  console.log(platform, "platformusdffdf");
+  const handleOpen = (platform) => {
+    setPlatform(platform); // Set the platform (LinkedIn, Facebook, or Twitter)
+    if (platform === "LinkedIn") {
+      setProfileUrl(application.linkedInUrl || "");  // Prefill LinkedIn URL if available
+    } else if (platform === "Facebook") {
+      setProfileUrl(application.facebookUrl || "");  // Prefill Facebook URL if available
+    } else if (platform === "Twitter") {
+      setProfileUrl(application.twitterUrl || "");   // Prefill Twitter URL if available
+    }
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setProfileUrl(""); // Reset URL input when the modal is closed
+  };
+
+  const handleSave = () => {
+    console.log(profileUrl, "profileUrlsfsdsdfsdfsdf");
+
+    const apiUrl = "/update-social-url/"; // No need to include the full URL, as it's set in the axios instance
+
+    // Data to send to the API
+    const requestData = {
+      resume_id: application.id, // Assuming `application.id` is the resume ID
+      url_type: platform, // The type of social media (e.g., 'linkedIn', 'facebook', 'twitter')
+      new_url: profileUrl, // The new profile URL to update
+    };
+
+    // Call the API using axiosInstance
+    axiosInstance
+      .post(apiUrl, requestData)
+      .then((response) => {
+        if (response.data.success) {
+          console.log("Profile URL updated successfully.");
+        } else {
+          console.error("Failed to update profile URL:", response.data.error);
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating profile URL:", error);
+      });
+
+    handleClose(); // Close modal after saving
+  };
+
   const location = useLocation();
   const { application } = location.state || {};
   console.log(application, "applicationfsfsdfdf");
@@ -136,7 +213,11 @@ const ApplicationOverview = () => {
             Quick Access
           </Typography>
           <List>
-            <ListItem button onClick={() => handleScrollToSection(smsRef)} style={{cursor:'pointer'}}>
+            <ListItem
+              button
+              onClick={() => handleScrollToSection(smsRef)}
+              style={{ cursor: "pointer" }}
+            >
               <ListItemText
                 primary={
                   <>
@@ -154,65 +235,81 @@ const ApplicationOverview = () => {
                 }
               />
             </ListItem>
-            <ListItem button onClick={() => handleScrollToSection(smsRef)} style={{cursor:'pointer'}}>
+            <ListItem
+              button
+              onClick={() => handleScrollToSection(smsRef)}
+              style={{ cursor: "pointer" }}
+            >
               <ListItemText primary="SMS" />
             </ListItem>
             <ListItem
               button
               onClick={() => handleScrollToSection(invitedEventsRef)}
-              style={{cursor:'pointer'}}
+              style={{ cursor: "pointer" }}
             >
               <ListItemText primary="Invited Events" />
             </ListItem>
             <ListItem
               button
               onClick={() => handleScrollToSection(campaignsRef)}
-              style={{cursor:'pointer'}}
+              style={{ cursor: "pointer" }}
             >
               <ListItemText primary="Campaigns" />
             </ListItem>
             <ListItem
               button
               onClick={() => handleScrollToSection(checklistsRef)}
-              style={{cursor:'pointer'}}
+              style={{ cursor: "pointer" }}
             >
               <ListItemText primary="Checklists" />
             </ListItem>
-            <ListItem button onClick={() => handleScrollToSection(toDosRef)} style={{cursor:'pointer'}}>
+            <ListItem
+              button
+              onClick={() => handleScrollToSection(toDosRef)}
+              style={{ cursor: "pointer" }}
+            >
               <ListItemText primary="To-Dos" />
             </ListItem>
             <ListItem
               button
               onClick={() => handleScrollToSection(answeredAssessmentsRef)}
-              style={{cursor:'pointer'}}
+              style={{ cursor: "pointer" }}
             >
               <ListItemText primary="Answered Assessments" />
             </ListItem>
-            <ListItem button onClick={() => handleScrollToSection(notesRef)} style={{cursor:'pointer'}}>
+            <ListItem
+              button
+              onClick={() => handleScrollToSection(notesRef)}
+              style={{ cursor: "pointer" }}
+            >
               <ListItemText primary="Notes" />
             </ListItem>
             <ListItem
               button
               onClick={() => handleScrollToSection(ratingsReviewsRef)}
-              style={{cursor:'pointer'}}
+              style={{ cursor: "pointer" }}
             >
               <ListItemText primary="Ratings and Reviews" />
             </ListItem>
             <ListItem
               button
               onClick={() => handleScrollToSection(attachmentsRef)}
-              style={{cursor:'pointer'}}
+              style={{ cursor: "pointer" }}
             >
               <ListItemText primary="Attachments" />
             </ListItem>
             <ListItem
               button
               onClick={() => handleScrollToSection(interviewsRef)}
-              style={{cursor:'pointer'}}
+              style={{ cursor: "pointer" }}
             >
               <ListItemText primary="Interviews" />
             </ListItem>
-            <ListItem button onClick={() => handleScrollToSection(emailsRef)} style={{cursor:'pointer'}}>
+            <ListItem
+              button
+              onClick={() => handleScrollToSection(emailsRef)}
+              style={{ cursor: "pointer" }}
+            >
               <ListItemText primary="Emails" />
             </ListItem>
           </List>
@@ -223,12 +320,139 @@ const ApplicationOverview = () => {
       <Grid item xs={10}>
         <Card sx={styles.cardContainer}>
           {/* Header Section */}
-          <Grid container alignItems="center" justifyContent="space-between">
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="space-between"
+            marginBottom={"10px"}
+          >
             <Grid item>
               <Typography variant="h5" component="h2">
                 {application.name}'s Overview
               </Typography>
             </Grid>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #E0E0E0",
+                borderRadius: "20px",
+                width: "fit-content",
+              }}
+            >
+              <Tooltip
+                title={
+                  application.linkedInUrl
+                    ? "View/Edit LinkedIn URL"
+                    : "Add LinkedIn URL"
+                }
+              >
+                <IconButton
+                  onClick={
+                    application.linkedInUrl
+                      ? handleMenuOpen
+                      : () => handleOpen("LinkedIn")
+                  }
+                >
+                  <LinkedInIcon sx={{ color: "#0A66C2" }} />
+                </IconButton>
+              </Tooltip>
+
+              {/* LinkedIn Dropdown */}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem
+                  onClick={() =>
+                    window.open(application.linkedInUrl, "_blank")
+                  }
+                >
+                  View
+                </MenuItem>
+                <MenuItem onClick={() => handleOpen("LinkedIn")}>Edit</MenuItem>
+              </Menu>
+
+              {/* Facebook Button */}
+              <Tooltip
+                title={
+                  application.facebookUrl
+                    ? "View/Edit Facebook URL"
+                    : "Add Facebook URL"
+                }
+              >
+                <IconButton
+                  onClick={
+                    application.facebookUrl
+                      ? handleMenuOpen
+                      : () => handleOpen("Facebook")
+                  }
+                >
+                  <FacebookIcon sx={{ color: "#1877F2" }} />
+                </IconButton>
+              </Tooltip>
+
+              {/* Twitter Button */}
+              <Tooltip
+                title={
+                  application.twitterUrl
+                    ? "View/Edit Twitter URL"
+                    : "Add Twitter URL"
+                }
+              >
+                <IconButton
+                  onClick={
+                    application.twitterUrl
+                      ? handleMenuOpen
+                      : () => handleOpen("Twitter")
+                  }
+                >
+                  <TwitterIcon sx={{ color: "#1DA1F2" }} />
+                </IconButton>
+              </Tooltip>
+
+              {/* Modal for Entering URL */}
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+              >
+                <Box sx={style}>
+                  <Typography id="modal-title" variant="h6" component="h2">
+                    {platform} Profile
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    label={`Enter Candidate's ${platform} Profile`}
+                    value={profileUrl}
+                    onChange={(e) => setProfileUrl(e.target.value)}
+                    variant="outlined"
+                    sx={{ marginTop: 2 }}
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: 3,
+                    }}
+                  >
+                    <Button onClick={handleClose} sx={{ marginRight: 1 }}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleSave}
+                    >
+                      Save
+                    </Button>
+                  </Box>
+                </Box>
+              </Modal>
+            </Box>
             <Grid item>
               <Button variant="contained" color="primary">
                 Edit

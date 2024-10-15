@@ -12,7 +12,7 @@ const Navbar = () => {
 
   const handleRedirect = (path) => {
     navigate(path);
-    setJobOpeningsDropdown(false); // Close dropdown after redirect
+    setJobOpeningsDropdown(false);
   };
 
   return (

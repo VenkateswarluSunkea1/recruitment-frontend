@@ -219,7 +219,7 @@ const ApplicationOverview = () => {
           <List>
             <ListItem
               button
-              onClick={() => navigate("/applications")}
+              onClick={() => navigate("/applications",{ state: { applications: applications } })}
               style={{ cursor: "pointer" }}
             >
               <ListItemText

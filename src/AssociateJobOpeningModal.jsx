@@ -44,7 +44,7 @@ const AssociateJobOpeningModal = ({selectedRows}) => {
 
     try {
       const response = await fetch(
-        "http://34.131.163.216:8000/api/associate-resumes/",
+        "http://34.131.142.54:8000/api/associate-resumes/",
         // "http://34.131.114.47:8000/api/associate-resumes/",
         {
           method: "POST",
@@ -79,7 +79,7 @@ const AssociateJobOpeningModal = ({selectedRows}) => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(`http://34.131.163.216:8000/api/jobs/`);
+        const response = await axios.get(`http://34.131.142.54:8000/api/jobs/`);
         console.log(response.data, "assd"); // Log the entire response
         setJobs(response.data); // Adjust according to your API response structure
       } catch (err) {

@@ -3,8 +3,12 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Box, Toolbar, Typography, Button } from '@mui/material';
 import SendMailModal from './SendMailModal';
 import HiringPipeline from './HiringPipeline'; // Import the HiringPipeline component
+import { useLocation } from 'react-router-dom';
 
 const ApplicationsPage = () => {
+  const location = useLocation();
+  const { applications } = location.state || {};
+  console.log(applications,'applicationsefwewedwde');
   const [selectedRows, setSelectedRows] = useState([]);
   const [rows] = useState([
     {
@@ -17,7 +21,7 @@ const ApplicationsPage = () => {
     },
     {
       id: 2,
-      applicationName: 'React Developer',
+      posting_title: 'React Developer',
       rating: 4,
       hiringPipeline: 'Submissions',
       applicationStatus: 'Pending',
@@ -37,7 +41,7 @@ const ApplicationsPage = () => {
   // Define the columns without the stage change handler
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'applicationName', headerName: 'Application Name', width: 200 },
+    { field: 'posting_title', headerName: 'Application Name', width: 200 },
     { field: 'rating', headerName: 'Rating', width: 100 },
     {
       field: 'hiringPipeline',
@@ -45,8 +49,8 @@ const ApplicationsPage = () => {
       width: 300,
       renderCell: (params) => <HiringPipeline currentStage={params.value} />,
     },
-    { field: 'applicationStatus', headerName: 'Application Status', width: 180 },
-    { field: 'postingTitle', headerName: 'Posting Title', width: 200 },
+    { field: 'job_status', headerName: 'Application Status', width: 180 },
+    { field: 'posting_title', headerName: 'Posting Title', width: 200 },
   ];
 
   return (
@@ -69,7 +73,7 @@ const ApplicationsPage = () => {
         </Toolbar>
       )}
       <DataGrid
-        rows={rows}
+        rows={applications}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5, 10, 20]}

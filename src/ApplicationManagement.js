@@ -192,7 +192,7 @@ const FilterSidebar = ({
 
       const response = await fetch(
         // `https://fa8b-2409-40f0-201d-a5aa-30df-2d3c-4b77-42d0.ngrok-free.app/api/resumes?${queryParams}`,
-        `http://34.131.142.54:8000/api/resumes?${queryParams}`,
+        `https://recruit.zapto.org/api/resumes?${queryParams}`,
         // `http://localhost:8000/api/resumes?${queryParams}`,
         {
           headers: {

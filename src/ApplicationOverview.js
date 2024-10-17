@@ -27,6 +27,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter"; // You can customize this as per the "X" logo
 import Navbar from "./utils/Navbar";
+import { GitHub } from "@mui/icons-material";
 
 const styles = {
   cardContainer: {
@@ -383,18 +384,19 @@ const ApplicationOverview = () => {
               <Tooltip
                 title={
                   application.facebookUrl
-                    ? "View/Edit Facebook URL"
-                    : "Add Facebook URL"
+                    ? "View/Edit Github URL"
+                    : "Add Github URL"
                 }
               >
                 <IconButton
                   onClick={
                     application.facebookUrl
                       ? handleMenuOpen
-                      : () => handleOpen("Facebook")
+                      : () => handleOpen("Github")
                   }
                 >
-                  <FacebookIcon sx={{ color: "#1877F2" }} />
+                  {/* <FacebookIcon sx={{ color: "#1877F2" }} /> */}
+                  <GitHub/>
                 </IconButton>
               </Tooltip>
 

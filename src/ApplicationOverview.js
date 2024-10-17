@@ -24,7 +24,6 @@ import SmsIcon from "@mui/icons-material/Sms";
 import AddIcon from "@mui/icons-material/Add";
 import axiosInstance from "./utils/axiosInstance";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter"; // You can customize this as per the "X" logo
 import Navbar from "./utils/Navbar";
 import { GitHub } from "@mui/icons-material";

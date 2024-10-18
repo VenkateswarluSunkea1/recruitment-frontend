@@ -183,7 +183,7 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
     } catch (error) {
       console.error("Error fetching attachments:", error);
     }
-  }, [resumeId]);
+  }, [resumeId,setAttachments]);
   // const fetchAttachments = async () => {
   //   try {
   //     const response = await axiosInstance.get(

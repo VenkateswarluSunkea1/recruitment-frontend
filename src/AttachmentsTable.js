@@ -244,7 +244,7 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={() => handleFileUpload}
+                  onClick={handleFileUpload}
                   disabled={!selectedFile}
                 >
                   Upload

@@ -7,8 +7,8 @@ import { useLocation } from 'react-router-dom';
 
 const ApplicationsPage = () => {
   const location = useLocation();
-  const { applications } = location.state || {};
-  console.log(applications,'applicationsefwewedwde');
+  const { applications ,applicant_name} = location.state || {};
+  console.log(applications,'applicationsefwewedwde',applicant_name);
   const [selectedRows, setSelectedRows] = useState([]);
   // const [rows] = useState([
   //   {

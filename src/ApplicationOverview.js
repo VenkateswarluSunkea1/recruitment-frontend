@@ -27,6 +27,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/Twitter"; // You can customize this as per the "X" logo
 import Navbar from "./utils/Navbar";
 import { GitHub } from "@mui/icons-material";
+import AttachmentsTable from './AttachmentsTable';
 
 const styles = {
   cardContainer: {
@@ -93,6 +94,7 @@ const ApplicationOverview = () => {
   const [platform, setPlatform] = useState(""); // State to track the clicked platform
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [attachments, setAttachments] = useState([]);
 
   // Close menu handler
   const handleMenuClose = () => setAnchorEl(null);
@@ -219,7 +221,7 @@ const ApplicationOverview = () => {
           <List>
             <ListItem
               button
-              onClick={() => navigate("/applications",{ state: { applications: applications } })}
+              onClick={() => navigate("/applications",{ state: { applications: applications,applicant_name:application.name } })}
               style={{ cursor: "pointer" }}
             >
               <ListItemText
@@ -300,7 +302,20 @@ const ApplicationOverview = () => {
               onClick={() => handleScrollToSection(attachmentsRef)}
               style={{ cursor: "pointer" }}
             >
-              <ListItemText primary="Attachments" />
+              <ListItemText primary={
+                <>
+                Attachments{" "}
+                <span
+                  style={{
+                    backgroundColor: "lightblue",
+                    padding: "0px 5px",
+                    borderRadius: "4px",
+                  }}
+                >
+                  {attachments?.length}
+                </span>
+              </>
+              }/>
             </ListItem>
             <ListItem
               button
@@ -686,9 +701,7 @@ const ApplicationOverview = () => {
                 Attachments
               </Typography>
               <Divider />
-              <Typography sx={styles.noRecordsText}>
-                No records found
-              </Typography>
+              <AttachmentsTable resumeId={application.id} setAttachments={setAttachments} attachments={attachments}/>
             </CardContent>
           </Paper>
 

@@ -115,7 +115,6 @@ import {
   MoreVert,
   PictureAsPdf as PictureAsPdfIcon,
 } from "@mui/icons-material";
-import axios from "axios";
 import axiosInstance from "./utils/axiosInstance";
 
 const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
@@ -163,6 +162,7 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
           },
         }
       );
+      console.log(response,'response');
       // After successful upload, fetch updated list of attachments
       fetchAttachments();
       setSelectedFile(null);
@@ -191,7 +191,7 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
       fetchAttachments();
     }
     // Only resumeId is needed as a dependency
-  }, [resumeId]);
+  }, [resumeId,fetchAttachments]);
 
   return (
     <TableContainer component={Paper}>

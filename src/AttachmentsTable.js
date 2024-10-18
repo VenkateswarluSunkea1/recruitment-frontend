@@ -162,7 +162,7 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
           },
         }
       );
-      console.log(response,'response');
+      console.log(response, "response");
       // After successful upload, fetch updated list of attachments
       fetchAttachments();
       setSelectedFile(null);
@@ -174,7 +174,7 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
   };
 
   // Fetch attachments for a given resume
-  const fetchAttachments = async () => {
+  const fetchAttachments = useCallback(async () => {
     try {
       const response = await axiosInstance.get(
         `/resumes/${resumeId}/attachments/`
@@ -183,7 +183,17 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
     } catch (error) {
       console.error("Error fetching attachments:", error);
     }
-  };
+  }, [resumeId]);
+  // const fetchAttachments = async () => {
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/resumes/${resumeId}/attachments/`
+  //     );
+  //     setAttachments(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching attachments:", error);
+  //   }
+  // };
 
   // Fetch attachments when the component mounts
   useEffect(() => {
@@ -191,7 +201,7 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
       fetchAttachments();
     }
     // Only resumeId is needed as a dependency
-  }, [resumeId,fetchAttachments]);
+  }, [resumeId, fetchAttachments]);
 
   return (
     <TableContainer component={Paper}>
@@ -234,7 +244,7 @@ const AttachmentsTable = ({ resumeId, attachments, setAttachments }) => {
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={()=>handleFileUpload}
+                  onClick={() => handleFileUpload}
                   disabled={!selectedFile}
                 >
                   Upload

@@ -211,8 +211,14 @@ const ApplicationOverview = () => {
     <Navbar />
     <Grid container spacing={2}>
       {/* Left Sidebar */}
-      <Grid item xs={2}>
-        <Paper sx={styles.leftSidebar}>
+      <Grid item xs={12} sm={3} md={2}>
+      <Paper sx={{ 
+        ...styles.leftSidebar, 
+        height: '100vh', // Keep full height of the viewport
+        position: 'sticky', // Makes it stick to the top of the viewport on scroll
+        top: 0, // Stick to the top
+        overflow: 'auto', // Allows scrolling if the content overflows
+      }}>
           <Typography variant="h6" component="h2">
             Quick Access
           </Typography>
@@ -321,7 +327,7 @@ const ApplicationOverview = () => {
       </Grid>
 
       {/* Main Content */}
-      <Grid item xs={10}>
+      <Grid item xs={12} sm={9} md={10}>
         <Card sx={styles.cardContainer}>
           {/* Header Section */}
           <Grid

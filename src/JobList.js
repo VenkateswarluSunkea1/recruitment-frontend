@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import Navbar from "./utils/Navbar";
 import {Toolbar, Typography, Button } from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
 import AssociateJobOpeningModal from "./AssociateJobOpeningModal";
 import axiosInstance from "./utils/axiosInstance";
 
@@ -15,6 +15,7 @@ const JobList = () => {
   const pageSize = 10; // State for page size
   const [totalJobs, setTotalJobs] = useState(0); // State for total jobs
   const [selectedRows, setSelectedRows] = useState([]); // State for selected rows
+  const navigate = useNavigate();
   console.log(totalJobs,'totalJobs');
 
   useEffect(() => {
@@ -94,7 +95,19 @@ const JobList = () => {
   // Define the columns for the DataGrid
   const columns = [
     { field: "id", headerName: "Job Opening ID", width: 150 },
-    { field: "posting_title", headerName: "Posting Title", width: 200 },
+    {
+      field: "posting_title",
+      headerName: "Posting Title",
+      width: 200,
+      renderCell: (params) => (
+        <Button
+          onClick={() => navigate(`/job/overview`)} // Pass row data
+          variant="text"
+        >
+          {params.value}
+        </Button>
+      ),
+    },
     {
       field: "assigned_recruiter",
       headerName: "Assigned Recruiter(s)",

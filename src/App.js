@@ -8,6 +8,7 @@ import CreateCandidateForm from './createCandidateForm';
 import JobList from './JobList';
 import ApplicationOverview from './ApplicationOverview';
 import ApplicationsPage from './ApplicationsPage.js';
+import JobOverview from './JobOverview.js';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/create/candidate" element={<CreateCandidateForm />} />
         <Route path="/application/overview" element={<ApplicationOverview />} />
         <Route path="/applications" element={<ApplicationsPage />} />
+        <Route path="/job/overview" element={<JobOverview />} />
       </Routes>
     </Router>
   );

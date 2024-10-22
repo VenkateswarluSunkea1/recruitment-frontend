@@ -24,9 +24,10 @@ import SmsIcon from "@mui/icons-material/Sms";
 import AddIcon from "@mui/icons-material/Add";
 import axiosInstance from "./utils/axiosInstance";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter"; // You can customize this as per the "X" logo
 import Navbar from "./utils/Navbar";
+import { GitHub } from "@mui/icons-material";
+import AttachmentsTable from './AttachmentsTable';
 
 const styles = {
   cardContainer: {
@@ -93,6 +94,7 @@ const ApplicationOverview = () => {
   const [platform, setPlatform] = useState(""); // State to track the clicked platform
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [attachments, setAttachments] = useState([]);
 
   // Close menu handler
   const handleMenuClose = () => setAnchorEl(null);
@@ -225,7 +227,7 @@ const ApplicationOverview = () => {
           <List>
             <ListItem
               button
-              onClick={() => navigate("/applications",{ state: { applications: applications } })}
+              onClick={() => navigate("/applications",{ state: { applications: applications,applicant_name:application.name } })}
               style={{ cursor: "pointer" }}
             >
               <ListItemText
@@ -306,7 +308,20 @@ const ApplicationOverview = () => {
               onClick={() => handleScrollToSection(attachmentsRef)}
               style={{ cursor: "pointer" }}
             >
-              <ListItemText primary="Attachments" />
+              <ListItemText primary={
+                <>
+                Attachments{" "}
+                <span
+                  style={{
+                    backgroundColor: "lightblue",
+                    padding: "0px 5px",
+                    borderRadius: "4px",
+                  }}
+                >
+                  {attachments?.length}
+                </span>
+              </>
+              }/>
             </ListItem>
             <ListItem
               button
@@ -389,18 +404,19 @@ const ApplicationOverview = () => {
               <Tooltip
                 title={
                   application.facebookUrl
-                    ? "View/Edit Facebook URL"
-                    : "Add Facebook URL"
+                    ? "View/Edit Github URL"
+                    : "Add Github URL"
                 }
               >
                 <IconButton
                   onClick={
                     application.facebookUrl
                       ? handleMenuOpen
-                      : () => handleOpen("Facebook")
+                      : () => handleOpen("Github")
                   }
                 >
-                  <FacebookIcon sx={{ color: "#1877F2" }} />
+                  {/* <FacebookIcon sx={{ color: "#1877F2" }} /> */}
+                  <GitHub/>
                 </IconButton>
               </Tooltip>
 
@@ -691,9 +707,7 @@ const ApplicationOverview = () => {
                 Attachments
               </Typography>
               <Divider />
-              <Typography sx={styles.noRecordsText}>
-                No records found
-              </Typography>
+              <AttachmentsTable resumeId={application.id} setAttachments={setAttachments} attachments={attachments}/>
             </CardContent>
           </Paper>
 

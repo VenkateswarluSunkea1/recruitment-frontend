@@ -7,28 +7,28 @@ import { useLocation } from 'react-router-dom';
 
 const ApplicationsPage = () => {
   const location = useLocation();
-  const { applications } = location.state || {};
-  console.log(applications,'applicationsefwewedwde');
+  const { applications ,applicant_name} = location.state || {};
+  console.log(applications,'applicationsefwewedwde',applicant_name);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [rows] = useState([
-    {
-      id: 1,
-      applicationName: 'Java Developer',
-      rating: 5,
-      hiringPipeline: 'Hired',
-      applicationStatus: 'Associated',
-      postingTitle: 'Senior Java Developer',
-    },
-    {
-      id: 2,
-      posting_title: 'React Developer',
-      rating: 4,
-      hiringPipeline: 'Submissions',
-      applicationStatus: 'Pending',
-      postingTitle: 'Frontend Developer',
-    },
-    // Add more rows as needed
-  ]);
+  // const [rows] = useState([
+  //   {
+  //     id: 1,
+  //     applicationName: 'Java Developer',
+  //     rating: 5,
+  //     hiringPipeline: 'Hired',
+  //     applicationStatus: 'Associated',
+  //     postingTitle: 'Senior Java Developer',
+  //   },
+  //   {
+  //     id: 2,
+  //     posting_title: 'React Developer',
+  //     rating: 4,
+  //     hiringPipeline: 'Submissions',
+  //     applicationStatus: 'Pending',
+  //     postingTitle: 'Frontend Developer',
+  //   },
+  //   // Add more rows as needed
+  // ]);
 
   const handleRowSelectionChange = (newSelection) => {
     setSelectedRows(newSelection);

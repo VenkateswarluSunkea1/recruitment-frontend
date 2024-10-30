@@ -167,6 +167,40 @@ const JobOverview= ()=>{
 
   //   fetchJobs();
   // }, [jobs]);
+
+  const location = useLocation();
+  const { postingTitle } = location.state || {}; // Get postingTitle from the state
+  console.log(postingTitle + " dcbsdj dscv sd");
+  const [applications, setApplications] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0); // Current page
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
+
+  // Fetch applications from the backend with pagination and filtering by posting title
+  const fetchApplications = async (postingTitle, page = 0, limit = 10) => {
+    try {
+      const response = await axiosInstance.get("/resumes", {
+        params: {
+          page: page + 1,
+          limit: limit,
+          postingTitle: postingTitle, // Include postingTitle in the request
+        },
+      });
+
+      const data = await response.data;
+      setApplications(data.data);
+      setTotalCount(data.total_count);
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (postingTitle) {
+      fetchApplications(postingTitle, page, rowsPerPage);
+    }
+  }, [postingTitle, page, rowsPerPage]);
+
   const navigate = useNavigate();
 
   // Refs for each section
@@ -206,7 +240,7 @@ const JobOverview= ()=>{
           <List>
             <ListItem
               button
-              // onClick={() => navigate("/applications",{ state: { applications: applications } })}
+              onClick={() => navigate("/applications", { state: { postingTitle: applications.postingTitle } })}
               style={{ cursor: "pointer" }}
             >
               <ListItemText
@@ -220,7 +254,7 @@ const JobOverview= ()=>{
                         borderRadius: "4px",
                       }}
                     >
-                      {/* {applications?.length} */}
+                      {totalCount}
                     </span>
                   </>
                 }
@@ -269,7 +303,7 @@ const JobOverview= ()=>{
           >
             <Grid item>
               <Typography variant="h5" component="h2">
-                {/* {application.postingTitle} */} postingTitle
+                {postingTitle}
               </Typography>
             </Grid>
 
@@ -390,135 +424,3 @@ const JobOverview= ()=>{
 // }
 
 export default JobOverview;
-
-
-
-
-
-
-
-
-
-
-          //  <Box
-          //     sx={{
-          //       display: "flex",
-          //       alignItems: "center",
-          //       justifyContent: "center",
-          //       border: "1px solid #E0E0E0",
-          //       borderRadius: "20px",
-          //       width: "fit-content",
-          //     }}
-          //   >
-          //     <Tooltip
-          //       title={
-          //         application.linkedInUrl
-          //           ? "View/Edit LinkedIn URL"
-          //           : "Add LinkedIn URL"
-          //       }
-          //     >
-          //       <IconButton
-          //         onClick={
-          //           application.linkedInUrl
-          //             ? handleMenuOpen
-          //             : () => handleOpen("LinkedIn")
-          //         }
-          //       >
-          //         <LinkedInIcon sx={{ color: "#0A66C2" }} />
-          //       </IconButton>
-          //     </Tooltip>
-
-          //     {/* LinkedIn Dropdown */}
-          //     <Menu
-          //       anchorEl={anchorEl}
-          //       open={Boolean(anchorEl)}
-          //       onClose={handleMenuClose}
-          //     >
-          //       <MenuItem
-          //         onClick={() =>
-          //           window.open(application.linkedInUrl, "_blank")
-          //         }
-          //       >
-          //         View
-          //       </MenuItem>
-          //       <MenuItem onClick={() => handleOpen("LinkedIn")}>Edit</MenuItem>
-          //     </Menu>
-
-          //     {/* Facebook Button */}
-          //     <Tooltip
-          //       title={
-          //         application.facebookUrl
-          //           ? "View/Edit Facebook URL"
-          //           : "Add Facebook URL"
-          //       }
-          //     >
-          //       <IconButton
-          //         onClick={
-          //           application.facebookUrl
-          //             ? handleMenuOpen
-          //             : () => handleOpen("Facebook")
-          //         }
-          //       >
-          //         <FacebookIcon sx={{ color: "#1877F2" }} />
-          //       </IconButton>
-          //     </Tooltip>
-
-          //     {/* Twitter Button */}
-          //     <Tooltip
-          //       title={
-          //         application.twitterUrl
-          //           ? "View/Edit Twitter URL"
-          //           : "Add Twitter URL"
-          //       }
-          //     >
-          //       <IconButton
-          //         onClick={
-          //           application.twitterUrl
-          //             ? handleMenuOpen
-          //             : () => handleOpen("Twitter")
-          //         }
-          //       >
-          //         <TwitterIcon sx={{ color: "#1DA1F2" }} />
-          //       </IconButton>
-          //     </Tooltip>
-
-          //     {/* Modal for Entering URL */}
-          //     <Modal
-          //       open={open}
-          //       onClose={handleClose}
-          //       aria-labelledby="modal-title"
-          //       aria-describedby="modal-description"
-          //     >
-          //       <Box sx={style}>
-          //         <Typography id="modal-title" variant="h6" component="h2">
-          //           {platform} Profile
-          //         </Typography>
-          //         <TextField
-          //           fullWidth
-          //           label={`Enter Candidate's ${platform} Profile`}
-          //           value={profileUrl}
-          //           onChange={(e) => setProfileUrl(e.target.value)}
-          //           variant="outlined"
-          //           sx={{ marginTop: 2 }}
-          //         />
-          //         <Box
-          //           sx={{
-          //             display: "flex",
-          //             justifyContent: "flex-end",
-          //             marginTop: 3,
-          //           }}
-          //         >
-          //           <Button onClick={handleClose} sx={{ marginRight: 1 }}>
-          //             Cancel
-          //           </Button>
-          //           <Button
-          //             variant="contained"
-          //             color="primary"
-          //             onClick={handleSave}
-          //           >
-          //             Save
-          //           </Button>
-          //         </Box>
-          //       </Box>
-          //     </Modal>
-          //   </Box>

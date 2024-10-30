@@ -101,7 +101,7 @@ const JobList = () => {
       width: 200,
       renderCell: (params) => (
         <Button
-          onClick={() => navigate(`/job/overview`)} // Pass row data
+          onClick={() => navigate(`/job/overview`, { state: { postingTitle: params.value } })} // Pass postingTitle
           variant="text"
         >
           {params.value}

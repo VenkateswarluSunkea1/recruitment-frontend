@@ -76,7 +76,6 @@ const FilterSidebar = ({
   setTotalCount,
   page,
   rowsPerPage,
-  hideFilters,
   sidebarVisible,
 }) => {
   const [filterOptions, setFilterOptions] = useState(
@@ -469,9 +468,7 @@ const ApplicationManagement = () => {
   const navigate = useNavigate();
 
   const [sidebarVisible, setSidebarVisible] = useState(true); // Track visibility of the sidebar
-  const hideFilters = () => {
-    setSidebarVisible((prev) => !prev); // Toggle sidebar visibility
-  };
+  const toggleSidebar = () => setSidebarVisible(!sidebarVisible);
 
 
   // Fetch applications from the backend with pagination
@@ -622,7 +619,13 @@ const ApplicationManagement = () => {
                 </Button>
               </div>
             )}
-            <Button variant='text' onClick={hideFilters}>Hide Filter</Button>
+            <Button
+              variant="outlined"
+              onClick={toggleSidebar}
+              style={{ marginLeft: "10px" }}
+            >
+              {sidebarVisible ? "Hide Filters" : "Show Filters"}
+            </Button>
           </div>
 
           <Button variant="text" className="ml-2">
@@ -631,7 +634,7 @@ const ApplicationManagement = () => {
         </div>
 
         <div className="flex flex-col md:flex-row">
-          <FilterSidebar
+          {sidebarVisible &&(<FilterSidebar
             filters={filters}
             setFilters={setFilters}
             setApplications={setApplications}
@@ -639,8 +642,7 @@ const ApplicationManagement = () => {
             page={page}
             rowsPerPage={rowsPerPage}
             sidebarVisible= {sidebarVisible}
-            hideFilters={hideFilters}
-          />
+          />)}
           <section className="flex-grow"
             style={{
               marginLeft: sidebarVisible ? "250px md:1/3" : "0",  // Adjust table width when sidebar is hidden

@@ -16,13 +16,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-4">
-      <div className="flex items-center justify-between">
+    <nav className="bg-blue-600 text-white p-4 w-full">
+      <div className="flex flex-col md:flex-row  items-center justify-between">
         <div className="flex items-center space-x-4">
           <Menu className="h-6 w-6" />
           <h1 className="text-xl font-bold">Recruit</h1>
         </div>
-        <div className="hidden md:flex space-x-4">
+        <div className="flex md:flex space-x-4">
           <button
             onClick={() => handleRedirect("/")} // Toggle dropdown on button click
             className="hover:bg-blue-700 px-3 py-2 rounded"
@@ -64,7 +64,7 @@ const Navbar = () => {
             </div>
           )}
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 mt-2 md:mt-0">
           {[Plus, Search, Bell, Settings].map((Icon, index) => (
             <button key={index} className="hover:bg-blue-700 p-2 rounded">
               <Icon className="h-4 w-4" />

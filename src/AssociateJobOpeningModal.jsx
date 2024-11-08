@@ -113,10 +113,10 @@ const AssociateJobOpeningModal = ({selectedRows}) => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500, // Adjust width to match the design
+            width: { xs: '90%', sm: 400 }, // Adjust width to match the design
             bgcolor: "background.paper",
             boxShadow: 24,
-            p: 4,
+            p: { xs: 2, sm: 4 },
             borderRadius: 2,
           }}
         >

@@ -5,6 +5,7 @@ import { TextField, Checkbox, Table, TableBody, TableCell, TableHead, TableRow, 
 import Navbar from './utils/Navbar';
 import AssociateJobOpeningModal from './AssociateJobOpeningModal';
 import axiosInstance from './utils/axiosInstance';
+import _ from 'lodash';
 
 // Custom CSS for a more professional look
 const styles = {
@@ -75,6 +76,8 @@ const FilterSidebar = ({
   setTotalCount,
   page,
   rowsPerPage,
+  hideFilters,
+  sidebarVisible,
 }) => {
   const [filterOptions, setFilterOptions] = useState(
     Object.keys(filters).reduce((acc, key) => {
@@ -234,16 +237,19 @@ const FilterSidebar = ({
     <div>
       <aside
         style={{
-          width: "250px",
+          width: sidebarVisible ? "250px md:w-1/3" : "0",
           padding: "16px",
           backgroundColor: "#fff",
           borderRadius: "8px",
           maxHeight: "550px",
           overflowY: "auto",
+          transition: "all 0.3s ease",  // Smooth transition for the width
+          position: 'relative',
         }}
       >
         <h3 style={{ fontWeight: "600", marginBottom: "12px" }}>
           Filter Applications By
+          
         </h3>
         {Object.entries(filters).map(([key, value]) => (
           <div key={key} style={{ marginBottom: "20px" }}>
@@ -257,7 +263,7 @@ const FilterSidebar = ({
                 htmlFor={key}
                 style={{ fontSize: "0.875rem", color: "#333" }}
               >
-                {key}
+                {_.startCase(_.toLower(key.replace(/_/g, ' ')))}
               </label>
             </div>
             {/* Show the select box and input field when the checkbox is checked */}
@@ -462,6 +468,12 @@ const ApplicationManagement = () => {
   const [showDropdown, setShowDropdown] = useState(false); // State to handle dropdown visibility
   const navigate = useNavigate();
 
+  const [sidebarVisible, setSidebarVisible] = useState(true); // Track visibility of the sidebar
+  const hideFilters = () => {
+    setSidebarVisible((prev) => !prev); // Toggle sidebar visibility
+  };
+
+
   // Fetch applications from the backend with pagination
   const fetchApplications = async (page = 0, limit = 10) => {
     try {
@@ -540,7 +552,7 @@ const ApplicationManagement = () => {
     navigate("/application/overview", { state: { application: app } }); // Pass app data via state
   };
   return (
-    <div style={styles.container}>
+    <div className='flex flex-col h-screen'>
       <Navbar />
 
       {/* Conditionally render the top action bar when rows are selected */}
@@ -570,7 +582,7 @@ const ApplicationManagement = () => {
 
       <main style={styles.main}>
         <h2 style={styles.header}>Applications</h2>
-        <div style={styles.searchContainer}>
+        <div className='flex flex-col md:flex-row md:items-center md:justify-between mb-4'>
           <TextField
             variant="outlined"
             placeholder="Search applications..."
@@ -588,7 +600,6 @@ const ApplicationManagement = () => {
             >
               Add
             </Button>
-
             {showDropdown && (
               <div className="absolute left-0 mt-2 bg-white shadow-lg rounded-lg py-2 w-48 z-10">
                 <Button
@@ -611,6 +622,7 @@ const ApplicationManagement = () => {
                 </Button>
               </div>
             )}
+            <Button variant='text' onClick={hideFilters}>Hide Filter</Button>
           </div>
 
           <Button variant="text" className="ml-2">
@@ -618,7 +630,7 @@ const ApplicationManagement = () => {
           </Button>
         </div>
 
-        <div className="flex space-x-6">
+        <div className="flex flex-col md:flex-row">
           <FilterSidebar
             filters={filters}
             setFilters={setFilters}
@@ -626,8 +638,15 @@ const ApplicationManagement = () => {
             setTotalCount={setTotalCount}
             page={page}
             rowsPerPage={rowsPerPage}
+            sidebarVisible= {sidebarVisible}
+            hideFilters={hideFilters}
           />
-          <section className="flex-grow">
+          <section className="flex-grow"
+            style={{
+              marginLeft: sidebarVisible ? "250px md:1/3" : "0",  // Adjust table width when sidebar is hidden
+              transition: "margin-left 0.3s ease",  // Smooth transition when the sidebar toggles
+            }}
+          >
             <ApplicationTable applications={filteredApplications} onSort={handleSort} onClick={handleRowClick}selectedRows={selectedRows} setSelectedRows={setSelectedRows}/>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}

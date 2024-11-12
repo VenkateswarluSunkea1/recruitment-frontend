@@ -17,52 +17,49 @@ const Navbar = () => {
 
   return (
     <nav className="bg-blue-600 text-white p-4 w-full">
-      <div className="flex flex-col md:flex-row  items-center justify-between">
+      <div className="flex flex-col md:flex-row items-center justify-between">
         <div className="flex items-center space-x-4">
           <Menu className="h-6 w-6" />
           <h1 className="text-xl font-bold">Recruit</h1>
         </div>
-        <div className="flex md:flex space-x-4">
+        <div className="flex md:flex space-x-4 relative">
           <button
             onClick={() => handleRedirect("/")} // Toggle dropdown on button click
             className="hover:bg-blue-700 px-3 py-2 rounded"
           >
             Home
           </button>
-          <button
-            onClick={toggleJobOpeningsDropdown} // Toggle dropdown on button click
-            className="hover:bg-blue-700 px-3 py-2 rounded"
-          >
-            Job Openings
-          </button>
+          <div className="relative">
+            <button
+              onClick={toggleJobOpeningsDropdown} // Toggle dropdown on button click
+              className="hover:bg-blue-700 px-3 py-2 rounded"
+            >
+              Job Openings
+            </button>
+            {/* Dropdown menu */}
+            {jobOpeningsDropdown && (
+              <div className="absolute left-0 mt-2 bg-white shadow-lg rounded-lg py-2 w-48 z-10">
+                <button
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  onClick={() => handleRedirect("/create/job-opening")}
+                >
+                  Create Job Opening
+                </button>
+                <button
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  onClick={() => handleRedirect("/import/job-openings")}
+                >
+                  Import Job Openings
+                </button>
+              </div>
+            )}
+          </div>
           <button
             onClick={() => handleRedirect("/job-list")}
             className="hover:bg-blue-700 px-3 py-2 rounded"
           >
             Job list
           </button>
-          <button
-            onClick={toggleJobOpeningsDropdown} // Toggle dropdown on button click
-            className="hover:bg-blue-700 px-3 py-2 rounded"
-          >
-            Candidates
-          </button>
-          {jobOpeningsDropdown && (
-            <div className="absolute mt-2 bg-white shadow-lg rounded-lg py-2 w-48 z-10">
-              <button
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                onClick={() => handleRedirect("/create/job-opening")}
-              >
-                Create Job Opening
-              </button>
-              <button
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
-                onClick={() => handleRedirect("/import/job-openings")}
-              >
-                Import Job Openings
-              </button>
-            </div>
-          )}
         </div>
         <div className="flex items-center space-x-2 mt-2 md:mt-0">
           {[Plus, Search, Bell, Settings].map((Icon, index) => (

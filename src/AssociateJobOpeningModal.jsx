@@ -44,8 +44,8 @@ const AssociateJobOpeningModal = ({selectedRows}) => {
 
     try {
       const response = await fetch(
-        "https://recruit.zapto.org/api/associate-resumes/",
-        // "http://34.131.114.47:8000/api/associate-resumes/",
+        // "https://recruit.zapto.org/api/associate-resumes/",
+        "http://127.0.0.1:8000/api/associate-resumes/",
         {
           method: "POST",
           headers: {
@@ -79,7 +79,7 @@ const AssociateJobOpeningModal = ({selectedRows}) => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(`https://recruit.zapto.org/api/jobs/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/jobs/`);
         console.log(response.data, "assd"); // Log the entire response
         setJobs(response.data); // Adjust according to your API response structure
       } catch (err) {
@@ -181,9 +181,16 @@ const AssociateJobOpeningModal = ({selectedRows}) => {
               label="Select Application Status"
               onChange={(e) => setApplicationStatus(e.target.value)}
             >
-              <MenuItem value="Associated">Associated</MenuItem>
+              {/* <MenuItem value="Associated">Associated</MenuItem>
               <MenuItem value="In Progress">In Progress</MenuItem>
-              <MenuItem value="Completed">Completed</MenuItem>
+              <MenuItem value="Completed">Completed</MenuItem> */}
+              <MenuItem value="New">New</MenuItem>
+              <MenuItem value="In Review">In Review</MenuItem>
+              <MenuItem value="Available">Available</MenuItem>
+              <MenuItem value="Engaged">Engaged</MenuItem>
+              <MenuItem value="Offered">Offered</MenuItem>
+              <MenuItem value="Hired">Hired</MenuItem>
+              <MenuItem value="Rejected">Rejected</MenuItem>
             </Select>
           </FormControl>
 

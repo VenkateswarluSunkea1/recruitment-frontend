@@ -60,6 +60,12 @@ const Navbar = () => {
           >
             Job list
           </button>
+          <button
+
+            className="hover:bg-blue-700 px-3 py-2 rounded"
+          >
+            Interviews
+          </button>
         </div>
         <div className="flex items-center space-x-2 mt-2 md:mt-0">
           {[Plus, Search, Bell, Settings].map((Icon, index) => (

@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import Navbar from "./utils/Navbar";
-import {Toolbar, Typography, Button } from "@mui/material";
+import {Toolbar, Typography, Button, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AssociateJobOpeningModal from "./AssociateJobOpeningModal";
+import DeleteIcon from "@mui/icons-material/Delete";
 import axiosInstance from "./utils/axiosInstance";
 
 const JobList = () => {
@@ -78,6 +79,24 @@ const JobList = () => {
   //   currPage * pageSize
   // );
 
+    // Delete selected jobs
+    const handleDelete = async () => {
+      try {
+        // Make delete requests for all selected rows
+        await Promise.all(
+          selectedRows.map((jobId) =>
+            axiosInstance.delete(`/jobs/${jobId}`) // Adjust endpoint if necessary
+          )
+        );
+        // Remove deleted jobs from the local state
+        setJobs((prevJobs) => prevJobs.filter((job) => !selectedRows.includes(job.id)));
+        // Clear selected rows
+        setSelectedRows([]);
+      } catch (err) {
+        console.error("Failed to delete jobs:", err);
+      }
+    };
+
   if (loading) {
     return <div>Loading...</div>; // Show loading indicator
   }
@@ -101,10 +120,10 @@ const JobList = () => {
       width: 200,
       renderCell: (params) => (
         <Button
-          onClick={() => navigate(`/job/overview`, { state: { postingTitle: params.value } })} // Pass postingTitle
+          onClick={() => navigate(`/job/overview`, { state: { jobId: params.row.id, postingTitle: params.row.posting_title } })} 
           variant="text"
         >
-          {params.value}
+          {params.row.posting_title}  {/* Show posting title */}
         </Button>
       ),
     },
@@ -146,7 +165,9 @@ const JobList = () => {
           >
             clear
           </Button>
-          <AssociateJobOpeningModal />
+          <IconButton color="error" onClick={handleDelete} title="Delete Selected Jobs">
+            <DeleteIcon />
+          </IconButton>
         </Toolbar>
       )}
 

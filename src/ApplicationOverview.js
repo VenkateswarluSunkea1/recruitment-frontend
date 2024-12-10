@@ -487,6 +487,7 @@ const ApplicationOverview = () => {
           </Grid>
 
           {/* Candidate Stages */}
+          {console.log(application.status+ " candiasdsate status")}
           <Box sx={styles.stagesContainer}>
             {[
               "New",
@@ -501,7 +502,7 @@ const ApplicationOverview = () => {
                 key={index}
                 label={stage}
                 sx={{
-                  ...(stage === "Engaged" ? styles.activeStage : {}),
+                  ...(stage === application.status ? styles.activeStage : {}),
                   padding: "10px",
                   minWidth: "70px",
                   textAlign: "center",

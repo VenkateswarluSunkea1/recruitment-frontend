@@ -22,6 +22,7 @@ function App() {
         <Route path="/import/job-openings" element={<ImportJobOpenings />} />
         <Route path="/create/candidate" element={<CreateCandidateForm />} />
         <Route path="/application/overview" element={<ApplicationOverview />} />
+        {/* <Route path="/get_resumes_by_job" element={<ApplicationsPage />} /> */}
         <Route path="/applications" element={<ApplicationsPage />} />
         <Route path="/job/overview" element={<JobOverview />} />
       </Routes>

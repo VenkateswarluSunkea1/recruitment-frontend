@@ -5,13 +5,13 @@ import CircleIcon from '@mui/icons-material/Circle';
 const HiringPipeline = ({ currentStage }) => {
   // Define stages and their associated colors
   const stages = [
-    { label: 'Screening', color: '#ff5722' },   // Orange for Screening
-    { label: 'Submissions', color: '#cddc39' }, // Lime for Submissions
-    { label: 'Interview', color: '#00bcd4' },   // Cyan for Interview
-    { label: 'Offered', color: '#8bc34a' },     // Light Green for Offered
-    { label: 'Hired', color: '#4caf50' },       // Green for Hired
-    { label: 'Rejected', color: '#f44336' },    // Red for Rejected
-    { label: 'Archived', color: '#9e9e9e' },    // Grey for Archived
+    { label: 'screening', color: '#ff5722' },   // Orange for Screening
+    { label: 'submissions', color: '#cddc39' }, // Lime for Submissions
+    { label: 'interview', color: '#00bcd4' },   // Cyan for Interview
+    { label: 'offered', color: '#8bc34a' },     // Light Green for Offered
+    { label: 'hired', color: '#4caf50' },       // Green for Hired
+    { label: 'rejected', color: '#f44336' },    // Red for Rejected
+    { label: 'archived', color: '#9e9e9e' },    // Grey for Archived
   ];
 
   // Find the index of the current stage

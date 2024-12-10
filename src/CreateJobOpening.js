@@ -1,10 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './JobOpeningForm.css';
 import JoditEditor from 'jodit-react';
 import Navbar from './utils/Navbar';
 import axiosInstance from './utils/axiosInstance';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const JobOpeningForm = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Fetch the state passed via navigate (i.e., jobId and postingTitle)
+  const { jobId, postingTitle } = location.state || {};
+
   const [formData, setFormData] = useState({
     posting_title: '',
     contact_name: '',
@@ -90,13 +97,35 @@ const JobOpeningForm = () => {
     };
   
     try {
-      // const response = await axios.post('http://localhost:8000/api/jobs/', adjustedData);
-      const response = await axiosInstance.post('/jobs/', adjustedData);
-      console.log("Job posted:", response.data);
+      // If jobId exists, we're editing an existing job, so use PUT request
+      const response = jobId
+        ? await axiosInstance.put(`/jobs/${jobId}/`, adjustedData)
+        : await axiosInstance.post('/jobs/', adjustedData);
+      console.log("Job posted/updated:", response.data);
+      navigate('/'); 
     } catch (error) {
-      console.error("There was an error posting the job:", error.response.data);
+      console.error("There was an error posting/updating the job:", error.response.data);
     }
   };
+
+  useEffect(() => {
+    if (jobId) {
+      // Fetch the existing job data from the API if editing
+      const fetchJobData = async () => {
+        try {
+          const response = await axiosInstance.get(`/jobs/${jobId}`);
+          setFormData((prevState) => ({
+            ...prevState,
+            ...response.data,  // Assuming response.data contains the job details
+            job_description: response.data.job_description || '',  // Make sure to handle the job description
+          }));
+        } catch (error) {
+          console.error("Error fetching job data:", error);
+        }
+      };
+      fetchJobData();
+    }
+  }, [jobId]);
 
   return (
     <>
@@ -163,9 +192,13 @@ const JobOpeningForm = () => {
             onChange={handleChange}
             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
           >
-            <option value="In-progress">In-progress</option>
-            <option value="Closed">Closed</option>
-            <option value="On-hold">On-hold</option>
+            <option value="New">New</option>
+            <option value="In Review">In Review</option>
+            <option value="Available">Available</option>
+            <option value="Engaged">Engaged</option>
+            <option value="Offered">Offered</option>
+            <option value="Hired">Hired</option>
+            <option value="Rejected">Rejected</option>
           </select>
         </div>
 
@@ -402,7 +435,7 @@ const JobOpeningForm = () => {
   
       
   
-      <h3 className="text-lg font-semibold mt-6 mb-2">Description Information</h3>
+      <h3 className="text-lg font-semibold mt-6 mb-2 important-heading">Description Information</h3>
       <div className="form-group mb-4">
         <label className="block text-sm font-medium text-gray-700">Job Description</label>
         <JoditEditor
@@ -437,7 +470,7 @@ const JobOpeningForm = () => {
       </div> */}
   
       <button className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-500" type="submit">
-        Save and Publish
+        {jobId ? 'Update and Publish' : 'Save and Publish'}
       </button>
     </form>
     </>

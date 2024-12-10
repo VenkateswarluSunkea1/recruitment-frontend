@@ -85,110 +85,40 @@ const style = {
 };
 
 const JobOverview= ()=>{
-  // const [open, setOpen] = useState(false);
-  // const [profileUrl, setProfileUrl] = useState("");
-  // const [platform, setPlatform] = useState(""); // State to track the clicked platform
-  // const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
-  // const [anchorEl, setAnchorEl] = useState(null);
-
-  // // Close menu handler
-  // const handleMenuClose = () => setAnchorEl(null);
-  // console.log(platform, "platformusdffdf");
-  // const handleOpen = (platform) => {
-  //   setPlatform(platform); // Set the platform (LinkedIn, Facebook, or Twitter)
-  //   if (platform === "LinkedIn") {
-  //     setProfileUrl(application.linkedInUrl || "");  // Prefill LinkedIn URL if available
-  //   } else if (platform === "Facebook") {
-  //     setProfileUrl(application.facebookUrl || "");  // Prefill Facebook URL if available
-  //   } else if (platform === "Twitter") {
-  //     setProfileUrl(application.twitterUrl || "");   // Prefill Twitter URL if available
-  //   }
-  //   setOpen(true);
-  // };
-
-  // const handleClose = () => {
-  //   setOpen(false);
-  //   setProfileUrl(""); // Reset URL input when the modal is closed
-  // };
-
-  // const handleSave = () => {
-  //   console.log(profileUrl, "profileUrlsfsdsdfsdfsdf");
-
-  //   const apiUrl = "/update-social-url/"; // No need to include the full URL, as it's set in the axios instance
-
-  //   // Data to send to the API
-  //   const requestData = {
-  //     resume_id: application.id, // Assuming `application.id` is the resume ID
-  //     url_type: platform, // The type of social media (e.g., 'linkedIn', 'facebook', 'twitter')
-  //     new_url: profileUrl, // The new profile URL to update
-  //   };
-
-  //   // Call the API using axiosInstance
-  //   axiosInstance
-  //     .post(apiUrl, requestData)
-  //     .then((response) => {
-  //       if (response.data.success) {
-  //         console.log("Profile URL updated successfully.");
-  //       } else {
-  //         console.error("Failed to update profile URL:", response.data.error);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error updating profile URL:", error);
-  //     });
-
-  //   handleClose(); // Close modal after saving
-  // };
-
-  // const location = useLocation();
-  // const { application } = location.state || {};
-  // console.log(application, "applicationfsfsdfdf");
-  // const jobs = application.jobs;
-  // Correct useEffect Hook without conditional wrapper
-  // console.log(jobs, "jobsasdasdasd");
-  // const [applications, setApplications] = useState(0);
-  // useEffect(() => {
-  //   const fetchJobs = async () => {
-  //     if (jobs?.length > 0) {
-  //       try {
-  //         // const response = await axiosInstance.get(
-  //         //   `get-jobs-by-ids/?job_ids=${jobs.join(",")}`
-  //         // );
-  //         const response = await axiosInstance.get(`get-jobs-by-ids/`, {
-  //           params: { job_ids: jobs }, // Make sure jobs is an array, e.g., [1, 2]
-  //         });
-  //         setApplications(response.data);
-  //         console.log(response.data, "jsbgskbskfsdfsdfksdfbskdfbskfd"); // Handle the response data
-  //       } catch (error) {
-  //         console.error("Error fetching jobs", error);
-  //       }
-  //     }
-  //   };
-
-  //   fetchJobs();
-  // }, [jobs]);
-
   const location = useLocation();
-  const { postingTitle } = location.state || {}; // Get postingTitle from the state
-  console.log(postingTitle + " dcbsdj dscv sd");
+  const { postingTitle, jobId } = location.state || {}; // Get postingTitle from the state
+  console.log(jobId  + " dcbsdj dscv sd");
   const [applications, setApplications] = useState([]);
+  console.log("thiis is applications "+ applications);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0); // Current page
   const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
+  const [job, setJob] = useState(null); // Store the job details
+
+  const fetchJobDetails = async () => {
+    try {
+      const response = await axiosInstance.get(`jobs/${jobId}`);
+      setJob(response.data); // Set the fetched job data
+      console.log("ye h job ayi hui " + job)
+    } catch (error) {
+      console.error("Error fetching job details:", error);
+    }
+  };
 
   // Fetch applications from the backend with pagination and filtering by posting title
-  const fetchApplications = async (postingTitle, page = 0, limit = 10) => {
+  const fetchApplications = async (page = 0, limit = 10) => {
     try {
-      const response = await axiosInstance.get("/resumes", {
+      const response = await axiosInstance.get(`jobs/${jobId}/resumes`, {
         params: {
           page: page + 1,
           limit: limit,
-          postingTitle: postingTitle, // Include postingTitle in the request
+          // postingTitle: postingTitle, // Include postingTitle in the request
         },
       });
 
       const data = await response.data;
-      setApplications(data.data);
+      setApplications(data);
+      console.log("ths is data.dta"+ data);
       setTotalCount(data.total_count);
     } catch (error) {
       console.error("Error fetching applications:", error);
@@ -196,6 +126,7 @@ const JobOverview= ()=>{
   };
 
   useEffect(() => {
+    fetchJobDetails(); // Fetch job details when the component mounts
     if (postingTitle) {
       fetchApplications(postingTitle, page, rowsPerPage);
     }
@@ -218,7 +149,12 @@ const JobOverview= ()=>{
     }
   };
 
-  // console.log(jobs, "jobssdfsdf");
+  // Navigate to the Job Opening Form for editing
+  const handleEdit = () => {
+    navigate("/create/job-opening", {
+      state: { jobId, postingTitle }, // Pass jobId and postingTitle for editing purposes
+    });
+  };
 
 
   return (
@@ -240,7 +176,7 @@ const JobOverview= ()=>{
           <List>
             <ListItem
               button
-              onClick={() => navigate("/applications", { state: { postingTitle: applications.postingTitle } })}
+              onClick={() => navigate("/applications", { state: { applications: applications, jobId: jobId, postingTitle:postingTitle } })}
               style={{ cursor: "pointer" }}
             >
               <ListItemText
@@ -308,7 +244,7 @@ const JobOverview= ()=>{
             </Grid>
 
             <Grid item>
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" onClick={handleEdit}>
                 Edit
               </Button>
             </Grid>
@@ -340,40 +276,38 @@ const JobOverview= ()=>{
 
 
             {/* Business Card */}
-            <Card sx={styles.businessCard}>
-              <CardContent>
-                <Typography variant="h6" component="div">Business Card</Typography>
-                <Divider sx={{ marginBottom: "10px" }} />
-                <Grid container spacing={2}>
-                  <Grid item xs={6}><Typography>Publish: "--"</Typography></Grid>
-                  <Grid item xs={6}><Typography>Expected Revenue:"--"</Typography></Grid>
-                  <Grid item xs={6}><Typography>Missed Revenue: "--"</Typography></Grid>
-                  <Grid item xs={6}><Typography>City: "--"</Typography></Grid>
-                  <Grid item xs={6}><Typography>Contact Name: "--"</Typography></Grid>
-                  <Grid item xs={6}><Typography>Actual Revenue: "--"</Typography></Grid>
-                  <Grid item xs={6}><Typography>Target Date: "--"</Typography></Grid>
-                  <Grid item xs={6}><Typography>Assigned Recruiter(s): "--"</Typography></Grid>
-                </Grid>
-              </CardContent>
-            </Card>
+            {job && (
+              <Card sx={styles.businessCard}>
+                <CardContent>
+                  <Typography variant="h6" component="div">Business Card</Typography>
+                  <Divider sx={{ marginBottom: "10px" }} />
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}><Typography>Publish: {job.date_opened}</Typography></Grid>
+                    <Grid item xs={6}><Typography>Expected Revenue: {job.expected_revenue || "--"}</Typography></Grid>
+                    <Grid item xs={6}><Typography>Missed Revenue: {job.missed_revenue || "--"}</Typography></Grid>
+                    <Grid item xs={6}><Typography>City: {job.address_city || "--"}</Typography></Grid>
+                    <Grid item xs={6}><Typography>Contact Name: {job.contact_name || "--"}</Typography></Grid>
+                    <Grid item xs={6}><Typography>Actual Revenue: {job.actual_revenue || "--"}</Typography></Grid>
+                    <Grid item xs={6}><Typography>Target Date: {job.target_date}</Typography></Grid>
+                    <Grid item xs={6}><Typography>Assigned Recruiter(s): {job.assigned_recruiter || "--"}</Typography></Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            )}
 
           {/* Other Details */}
           <Card sx={{ marginTop: "20px" }}>
-            <CardContent>
-              <Typography variant="h6" component="div">
-                Other Details
-              </Typography>
-              <Divider sx={{ marginBottom: "10px" }} />
-              <Typography>ID: sampleID</Typography>
-              <Typography>Status: sampleStatus</Typography>
-              <Typography>Pipeline: pipeline</Typography>
-              <Typography>Posting Title: postingTitle</Typography>
-              <Typography>Source: source</Typography>
-              <Typography>
-                Candidate Owner: candidateOwner
-              </Typography>
-            </CardContent>
-          </Card>
+              <CardContent>
+                <Typography variant="h6" component="div">Other Details</Typography>
+                <Divider sx={{ marginBottom: "10px" }} />
+                <Typography>ID: {job?.id || "Loading..."}</Typography>
+                <Typography>Status: {job?.job_status || "Loading..."}</Typography>
+                <Typography>Pipeline: {job?.job_type || "Loading..."}</Typography>
+                <Typography>Posting Title: {job?.posting_title}</Typography>
+                <Typography>Source: {job?.industry || "Loading..."}</Typography>
+                <Typography>Candidate Owner: {job?.account_manager}</Typography>
+              </CardContent>
+            </Card>
 
 
           {/* Additional Sections from Scrolled Down Image */}
@@ -418,9 +352,5 @@ const JobOverview= ()=>{
     </>
   );
 };
-
-// const JobOverview= ()=>{
-//   return <p>JobOverview</p>
-// }
 
 export default JobOverview;

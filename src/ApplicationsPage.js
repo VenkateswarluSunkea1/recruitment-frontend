@@ -1,34 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Toolbar, Typography, Button } from '@mui/material';
 import SendMailModal from './SendMailModal';
 import HiringPipeline from './HiringPipeline'; // Import the HiringPipeline component
 import { useLocation } from 'react-router-dom';
+import axiosInstance from './utils/axiosInstance'; // Import axiosInstance
 
 const ApplicationsPage = () => {
   const location = useLocation();
-  const { applications ,applicant_name} = location.state || {};
-  console.log(applications,'applicationsefwewedwde',applicant_name);
+  const { applications, jobId, postingTitle } = location.state || {};
+  const [hiringPipelines, setHiringPipelines] = useState({}); // Store fetched pipeline data
+
+  // Function to fetch hiring pipeline for each row based on jobId and resumeId
+  const fetchHiringPipeline = async (resumeId) => {
+    if (!resumeId || !jobId) return; // If no resumeId or jobId, skip the API call
+
+    try {
+      // Adjust the URL as per your request format: /hiring_pipeline/{jobId}/{resumeId}
+      const response = await axiosInstance.get(`/hiring-pipelines/${jobId}/${resumeId}`);
+      
+      // Store the pipeline data with key as the resumeId
+      setHiringPipelines((prev) => ({
+        ...prev,
+        [resumeId]: response.data, // Store response by resumeId
+      }));
+    } catch (error) {
+      console.error("Error fetching hiring pipeline:", error);
+    }
+  };
+
   const [selectedRows, setSelectedRows] = useState([]);
-  // const [rows] = useState([
-  //   {
-  //     id: 1,
-  //     applicationName: 'Java Developer',
-  //     rating: 5,
-  //     hiringPipeline: 'Hired',
-  //     applicationStatus: 'Associated',
-  //     postingTitle: 'Senior Java Developer',
-  //   },
-  //   {
-  //     id: 2,
-  //     posting_title: 'React Developer',
-  //     rating: 4,
-  //     hiringPipeline: 'Submissions',
-  //     applicationStatus: 'Pending',
-  //     postingTitle: 'Frontend Developer',
-  //   },
-  //   // Add more rows as needed
-  // ]);
 
   const handleRowSelectionChange = (newSelection) => {
     setSelectedRows(newSelection);
@@ -38,19 +39,30 @@ const ApplicationsPage = () => {
     setSelectedRows([]);
   };
 
-  // Define the columns without the stage change handler
+  // Define the columns for the DataGrid
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'posting_title', headerName: 'Application Name', width: 200 },
+    { field: 'id', headerName: 'ID', width: 100 }, // Assuming 'id' is resumeId
+    { field: 'name', headerName: 'Application Name', width: 200 },
     { field: 'rating', headerName: 'Rating', width: 100 },
     {
       field: 'hiringPipeline',
       headerName: 'Hiring Pipeline',
       width: 300,
-      renderCell: (params) => <HiringPipeline currentStage={params.value} />,
+      renderCell: (params) => {
+        const resumeId = params.row.id;  // The 'id' field here is assumed to be resumeId
+        const pipelineData = hiringPipelines[resumeId];
+
+        // Fetch the pipeline data if not already fetched
+        if (!pipelineData) {
+          fetchHiringPipeline(resumeId); // Fetch the pipeline data
+        }
+
+        return (
+          <HiringPipeline currentStage={pipelineData?.status} />
+        );
+      },
     },
     { field: 'job_status', headerName: 'Application Status', width: 180 },
-    { field: 'posting_title', headerName: 'Posting Title', width: 200 },
   ];
 
   return (
